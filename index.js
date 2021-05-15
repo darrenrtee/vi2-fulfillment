@@ -19,7 +19,7 @@ const dialogflowFulfillment = (request,response) => {
     const agent = new WebhookClient({request,response})
 
     function testFunc(agent){
-        agent.add("Hi from heroku num = ")
+        agent.add("Hi from heroku num = " + curr_question)
     }
     
     let intentMap = new Map();
