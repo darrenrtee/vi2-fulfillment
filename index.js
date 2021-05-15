@@ -21,8 +21,12 @@ const dialogflowFulfillment = (request,response) => {
     function testFunc(agent){
         agent.add("Hi from heroku num = " + curr_question)
     }
-    curr_question = curr_question + 1
+    addkek()
     let intentMap = new Map();
     intentMap.set("Test",testFunc)
     agent.handleRequest(intentMap)
+}
+
+const addkek = () =>{
+    curr_question++
 }
