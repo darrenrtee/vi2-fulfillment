@@ -1,7 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const {WebhookClient} = require('dialogflow-fulfillment')
-const kek = 0;
 
 const app = express()
 app.use(bodyParser.json())
@@ -19,8 +18,7 @@ const dialogflowFulfillment = (request,response) => {
     const agent = new WebhookClient({request,response})
 
     function testFunc(agent){
-        agent.add("Hi from heroku num = "+ kek)
-        kek++
+        agent.add("Hi from heroku num = ")
     }
     
     let intentMap = new Map();
