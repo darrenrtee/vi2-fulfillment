@@ -20,15 +20,15 @@ const dialogflowFulfillment = (request,response) => {
 
     function testFunc(agent){
         agent.add("Hi from heroku num = " + curr_question)
+        agent.setContext({
+            "name": 'context-name',
+            "lifespan": 1,
+            "parameters":{"param": "param value"}
+          });
     }
-    
+
     let intentMap = new Map();
     intentMap.set("Test",testFunc)
     agent.handleRequest(intentMap)
 
-    addkek()
-}
-
-const addkek = () =>{
-    curr_question++;
 }
