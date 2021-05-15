@@ -19,12 +19,31 @@ const dialogflowFulfillment = (request,response) => {
     const agent = new WebhookClient({request,response})
 
     function testFunc(agent){
-        agent.add("Hi from heroku num = " + curr_question)
-        agent.setContext({
-            "name": 'context-name',
-            "lifespan": 1,
-            "parameters":{"param": "param value"}
-          });
+        if(agent.query == "hi"){
+            agent.add("Hi from heroku num = " + curr_question)
+            agent.setContext({
+                "name": 'hi-name',
+                "lifespan": 1,
+                "parameters":{"param": "param value"}
+            });
+        }
+        else if(agent.query == "hello"){
+            agent.add("Hello from heroku num = " + curr_question)
+            agent.setContext({
+                "name": 'hello-name',
+                "lifespan": 1,
+                "parameters":{"param": "param value"}
+            });
+        }
+        else if(agent.query == "hey"){
+            agent.add("Hey from heroku num = " + curr_question)
+            agent.setContext({
+                "name": 'hey-name',
+                "lifespan": 1,
+                "parameters":{"param": "param value"}
+            });
+        }
+        
     }
 
     let intentMap = new Map();
