@@ -228,7 +228,7 @@ const dialogflowFulfillment = (request,response) => {
         var number = agent.getContext('expecting-ready-to-continue-problem').parameters.problemnumber
         var numberofquestions = agent.getContext('expecting-ready-to-continue-problem').parameters.numberofquestions
         
-        agent.add("I will be displaying the problem on the screen. Please say done once you are done reading the problem.")
+        agent.add(" will be displayed on the screen. Please say done once you are done reading the problem.")
         agent.setContext({
             "name": 'expecting-done-reading-problem',
             "lifespan": 1,
