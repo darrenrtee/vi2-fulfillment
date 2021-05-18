@@ -83,7 +83,7 @@ const dialogflowFulfillment = (request,response) => {
         
         return getNumberOfQuestions("1")
         .then( numberofquestions => {
-            agent.add("I will be displaying the problem on the screen. Please say done once you are done reading the problem.")
+            agent.add(" will be displayed on the screen. Please say done once you are done reading the problem.")
         
             agent.setContext({
                 "name": 'expecting-done-reading-problem',
