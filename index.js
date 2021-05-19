@@ -301,7 +301,7 @@ const dialogflowFulfillment = (request,response) => {
 
             }
             else{
-                agent.add("Congratulations! You got the correct answer!")
+                agent.add("Congratulations! You solved the problem!")
                 agent.setContext({
                     "name": 'expecting-summary-of-problem',
                     "lifespan": 1,
