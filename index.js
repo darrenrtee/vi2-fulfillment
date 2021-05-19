@@ -386,7 +386,7 @@ const dialogflowFulfillment = (request,response) => {
                     agent.setContext({
                         "name": 'expecting-ready-to-continue-problem',
                         "lifespan": 1,
-                        "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions}
+                        "parameters":{"name": name,"problemnumber": number+1,"currentquestion":1,"numberofquestions":numberofquestions}
                     })
                 })
                 .catch( error => {
