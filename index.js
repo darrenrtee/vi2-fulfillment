@@ -54,6 +54,48 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    function getPumpingQuestion(number,question){
+        return QUESTION.findOne({number : number}).exec()
+          .then( doc => {
+            return Promise.resolve(doc.pumps[question-1]);
+        })
+    }
+
+    function getPumpingAnswer(number,question){
+        return QUESTION.findOne({number : number}).exec()
+          .then( doc => {
+            return Promise.resolve(doc.pumpsanswer[question-1]);
+        })
+    }
+
+    function getProblemSummary(number){
+        return QUESTION.findOne({number : number}).exec()
+          .then( doc => {
+            return Promise.resolve(doc.summary);
+        })
+    }
+
+    function getHint(number,question){
+        return QUESTION.findOne({number : number}).exec()
+          .then( doc => {
+            return Promise.resolve(doc.hints[question-1]);
+        })
+    }
+
+    function getReQuestion(number,question){
+        return QUESTION.findOne({number : number}).exec()
+          .then( doc => {
+            return Promise.resolve(doc.requestions[question-1]);
+        })
+    }
+
+    function getNegativeResponse(number,question){
+        return QUESTION.findOne({number : number}).exec()
+          .then( doc => {
+            return Promise.resolve(doc.negativeresponses[question-1]);
+        })
+    }
+
     function introduceChatBotFunc(agent){
         agent.add("Hi! I'm Vi. What's your name ? - From Webhook")
     }
@@ -123,7 +165,9 @@ const dialogflowFulfillment = (request,response) => {
         
         return getQuestionAnswer(number,1)
         .then( answer => {
-          if(answer == agent.query.toLowerCase()){
+          var isIncomplete = false;
+    
+          if(answer[0] == agent.query.toLowerCase()){
             agent.add("Congratulations! You got the correct answer! Are you ready to move on to the next question ?")
             agent.setContext({
                 "name": 'expecting-ready-to-continue-question',
@@ -132,17 +176,69 @@ const dialogflowFulfillment = (request,response) => {
             });
           }
           else{
-            agent.add("That doesnt seem to be right can you try again ? ")
-            agent.setContext({
-                "name": 'expecting-first-question-answer',
-                "lifespan": 1,
-                "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions}
-            });
+            for(var i = 1; i < answer.length; i++){
+                if(answer[i] == agent.query.toLowerCase()){
+                    isIncomplete = true
+                    break
+                }
+            }
+
+            if(isIncomplete){
+                return getPumpingQuestion(number,1)
+                .then( pump => {
+                        agent.add(pump)
+                        agent.setContext({
+                            "name": 'expecting-pump-question-answer',
+                            "lifespan": 1,
+                            "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions}
+                        });
+                    })
+                    .catch( error => {
+                    agent.add(error.toString()); // Error: Unknown response type: "undefined"
+                });
+            }
+            else{
+                agent.add("That doesnt seem to be right can you try again ? ")
+                agent.setContext({
+                    "name": 'expecting-first-question-answer',
+                    "lifespan": 1,
+                    "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions}
+                });
+            }
           }
-          
         })
         .catch( error => {
           agent.add(error.toString()); // Error: Unknown response type: "undefined"
+        });
+    }
+
+    function checkPumpingAnswer(agent){
+        var name = agent.getContext('expecting-pump-question-answer').parameters.name
+        var number = agent.getContext('expecting-pump-question-answer').parameters.problemnumber
+        var currentquestion = agent.getContext('expecting-pump-question-answer').parameters.currentquestion
+        var numberofquestions = agent.getContext('expecting-pump-question-answer').parameters.numberofquestions
+        
+        return getPumpingAnswer(number,currentquestion)
+        .then( answer => {
+                if(answer == agent.query.toLowerCase()){
+                    agent.add("Congratulations! You got the correct answer! Are you ready to move on to the next question ?")
+                    agent.setContext({
+                        "name": 'expecting-ready-to-continue-question',
+                        "lifespan": 1,
+                        "parameters":{"name": name,"problemnumber": number,"currentquestion":2,"numberofquestions":numberofquestions}
+                    });
+                }
+                else{
+                    agent.add("That doesnt seem to be right can you try again ? ")
+                    agent.setContext({
+                        "name": 'expecting-pump-question-answer',
+                        "lifespan": 1,
+                        "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions}
+                    });
+                }
+            })
+            .catch( error => {
+            agent.add(error.toString()); // Error: Unknown response type: "undefined"
         });
     }
 
@@ -156,7 +252,6 @@ const dialogflowFulfillment = (request,response) => {
         .then( question => {
             return getQuestionType(number,currentquestion)
                 .then( type => {
-                        console.log(type)
                         agent.add(question)
                         agent.setContext({
                         "name": 'expecting-succeding-question-answer',
@@ -182,7 +277,7 @@ const dialogflowFulfillment = (request,response) => {
 
         return getQuestionAnswer(number,currentquestion)
         .then( answer => {
-          if(answer == agent.query.toLowerCase()){
+          if(answer[0] == agent.query.toLowerCase()){
             if(currentquestion + 1 <= numberofquestions){
                 return getQuestionType(number,currentquestion)
                 .then( type => {
@@ -200,21 +295,65 @@ const dialogflowFulfillment = (request,response) => {
 
             }
             else{
-                agent.add("Congratulations! You got the correct answer! Are you ready to move on to the next problem ?")
+                agent.add("Congratulations! You got the correct answer!")
                 agent.setContext({
-                    "name": 'expecting-ready-to-continue-problem',
+                    "name": 'expecting-summary-of-problem',
                     "lifespan": 1,
-                    "parameters":{"name": name,"problemnumber": number+1,"currentquestion":1,"numberofquestions":numberofquestions}
+                    "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions}
                 });
             }
           }
           else{
-            agent.add("That doesnt seem to be right can you try again ? ")
-            agent.setContext({
-                "name": 'expecting-succeding-question-answer',
-                "lifespan": 1,
-                "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion,"numberofquestions":numberofquestions}
-            });
+            
+            return getQuestionType(number,currentquestion)
+                .then( type => {
+                        if(type!= "normal"){
+                            return getHint(number,currentquestion)
+                            .then( hint => {
+                                agent.add(hint)
+                                agent.setContext({
+                                    "name": 'expecting-succeding-question-answer',
+                                    "lifespan": 1,
+                                    "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion,"numberofquestions":numberofquestions}
+                                });
+                            })
+                            .catch( error => {
+                            agent.add(error.toString()); // Error: Unknown response type: "undefined"
+                            });
+                        }
+                        else if(type === "normal"){
+                            return getReQuestion(number,currentquestion)
+                            .then( requestion => {
+                                agent.add(requestion)
+                                agent.setContext({
+                                    "name": 'expecting-succeding-question-answer',
+                                    "lifespan": 1,
+                                    "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion,"numberofquestions":numberofquestions}
+                                });
+                            })
+                            .catch( error => {
+                            agent.add(error.toString()); // Error: Unknown response type: "undefined"
+                            });
+                        }
+                        else{
+                            return getNegativeResponse(number,currentquestion)
+                            .then( response => {
+                                agent.add(response)
+                                agent.setContext({
+                                    "name": 'expecting-succeding-question-answer',
+                                    "lifespan": 1,
+                                    "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion,"numberofquestions":numberofquestions}
+                                });
+                            })
+                            .catch( error => {
+                            agent.add(error.toString()); // Error: Unknown response type: "undefined"
+                            });
+                            
+                        }
+                    })
+                    .catch( error => {
+                    agent.add(error.toString()); // Error: Unknown response type: "undefined"
+                });
           }
           
         })
@@ -236,6 +375,25 @@ const dialogflowFulfillment = (request,response) => {
         });
     }
 
+    function showProblemSummary(agent){
+        var name = agent.getContext('expecting-summary-of-problem').parameters.name
+        var number = agent.getContext('expecting-summary-of-problem').parameters.problemnumber
+        var numberofquestions = agent.getContext('expecting-summary-of-problem').parameters.numberofquestions
+        console.log("inside showperoblem")
+        return getProblemSummary(number)
+            .then( summary => {
+                    agent.add(summary + ". Are you ready to move on to the next problem ?")
+                    agent.setContext({
+                        "name": 'expecting-ready-to-continue-problem',
+                        "lifespan": 1,
+                        "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions}
+                    })
+                })
+                .catch( error => {
+                agent.add(error.toString()); // Error: Unknown response type: "undefined"
+            });
+    }
+
     let intentMap = new Map();
     intentMap.set("Introduce Chat Bot Holder",introduceChatBotFunc)
     intentMap.set("Get Student Name",getStudentName)
@@ -246,6 +404,8 @@ const dialogflowFulfillment = (request,response) => {
     intentMap.set("Ask Succeding Question",askSucceedingQuestion)
     intentMap.set("Check Succeeding Question",checkSuccedingQuestionAnswer)
     intentMap.set("Show Succeding Problem",showSuccedingProblem)
+    intentMap.set("Check Pump Question Answer",checkPumpingAnswer)
+    intentMap.set("Show Problem Summary",showProblemSummary)
     agent.handleRequest(intentMap)
 
 }
