@@ -106,7 +106,7 @@ const dialogflowFulfillment = (request,response) => {
         agent.setContext({
             "name": 'expecting-ready-confirmation',
             "lifespan": 1,
-            "parameters":{"name": name}
+            "parameters":{"name": name,"mistakes":0}
         });
     }
 
@@ -116,13 +116,14 @@ const dialogflowFulfillment = (request,response) => {
         agent.setContext({
             "name": 'expecting-ready-confirmation',
             "lifespan": 1,
-            "parameters":{"name": name}
+            "parameters":{"name": name,"mistakes":0}
         });
     }
 
     function showFirstProblem(agent){
         var name = agent.getContext('expecting-ready-confirmation').parameters.name
-        
+        var mistakes = agent.getContext('expecting-ready-confirmation').parameters.mistakes
+
         return getNumberOfQuestions("1")
         .then( numberofquestions => {
             agent.add(" will be displayed on the screen. Please say done once you are done reading the problem.")
@@ -130,7 +131,7 @@ const dialogflowFulfillment = (request,response) => {
             agent.setContext({
                 "name": 'expecting-done-reading-problem',
                 "lifespan": 1,
-                "parameters":{"name": name,"problemnumber": 1,"numberofquestions":numberofquestions}
+                "parameters":{"name": name,"problemnumber": 1,"numberofquestions":numberofquestions,"mistakes":mistakes}
             });
         })
         .catch( error => {
@@ -143,6 +144,7 @@ const dialogflowFulfillment = (request,response) => {
         var name = agent.getContext('expecting-done-reading-problem').parameters.name
         var number = agent.getContext('expecting-done-reading-problem').parameters.problemnumber
         var numberofquestions = agent.getContext('expecting-done-reading-problem').parameters.numberofquestions
+        var mistakes = agent.getContext('expecting-done-reading-problem').parameters.mistakes
 
         return getQuestion(number,1)
         .then( question => {
@@ -150,7 +152,7 @@ const dialogflowFulfillment = (request,response) => {
           agent.setContext({
                 "name": 'expecting-first-question-answer',
                 "lifespan": 1,
-                "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions}
+                "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions,"mistakes":mistakes}
             });
         })
         .catch( error => {
@@ -162,6 +164,7 @@ const dialogflowFulfillment = (request,response) => {
         var name = agent.getContext('expecting-first-question-answer').parameters.name
         var number = agent.getContext('expecting-first-question-answer').parameters.problemnumber
         var numberofquestions = agent.getContext('expecting-first-question-answer').parameters.numberofquestions
+        var mistakes = agent.getContext('expecting-first-question-answer').parameters.mistakes
         
         return getQuestionAnswer(number,1)
         .then( answer => {
@@ -172,7 +175,7 @@ const dialogflowFulfillment = (request,response) => {
             agent.setContext({
                 "name": 'expecting-ready-to-continue-question',
                 "lifespan": 1,
-                "parameters":{"name": name,"problemnumber": number,"currentquestion":2,"numberofquestions":numberofquestions}
+                "parameters":{"name": name,"problemnumber": number,"currentquestion":2,"numberofquestions":numberofquestions,"mistakes":mistakes}
             });
           }
           else{
@@ -190,7 +193,7 @@ const dialogflowFulfillment = (request,response) => {
                         agent.setContext({
                             "name": 'expecting-pump-question-answer',
                             "lifespan": 1,
-                            "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions}
+                            "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions,"mistakes":mistakes}
                         });
                     })
                     .catch( error => {
@@ -202,7 +205,7 @@ const dialogflowFulfillment = (request,response) => {
                 agent.setContext({
                     "name": 'expecting-first-question-answer',
                     "lifespan": 1,
-                    "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions}
+                    "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions,"mistakes":mistakes}
                 });
             }
           }
@@ -217,6 +220,7 @@ const dialogflowFulfillment = (request,response) => {
         var number = agent.getContext('expecting-pump-question-answer').parameters.problemnumber
         var currentquestion = agent.getContext('expecting-pump-question-answer').parameters.currentquestion
         var numberofquestions = agent.getContext('expecting-pump-question-answer').parameters.numberofquestions
+        var mistakes = agent.getContext('expecting-pump-question-answer').parameters.mistakes
         
         return getPumpingAnswer(number,currentquestion)
         .then( answer => {
@@ -225,7 +229,7 @@ const dialogflowFulfillment = (request,response) => {
                     agent.setContext({
                         "name": 'expecting-ready-to-continue-question',
                         "lifespan": 1,
-                        "parameters":{"name": name,"problemnumber": number,"currentquestion":2,"numberofquestions":numberofquestions}
+                        "parameters":{"name": name,"problemnumber": number,"currentquestion":2,"numberofquestions":numberofquestions,"mistakes":mistakes}
                     });
                 }
                 else{
@@ -233,7 +237,7 @@ const dialogflowFulfillment = (request,response) => {
                     agent.setContext({
                         "name": 'expecting-pump-question-answer',
                         "lifespan": 1,
-                        "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions}
+                        "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions,"mistakes":mistakes}
                     });
                 }
             })
@@ -247,6 +251,7 @@ const dialogflowFulfillment = (request,response) => {
         var number = agent.getContext('expecting-ready-to-continue-question').parameters.problemnumber
         var currentquestion = agent.getContext('expecting-ready-to-continue-question').parameters.currentquestion
         var numberofquestions = agent.getContext('expecting-ready-to-continue-question').parameters.numberofquestions
+        var mistakes = agent.getContext('expecting-ready-to-continue-question').parameters.mistakes
         
         return getQuestion(number,currentquestion)
         .then( question => {
@@ -256,7 +261,7 @@ const dialogflowFulfillment = (request,response) => {
                         agent.setContext({
                         "name": 'expecting-succeding-question-answer',
                         "lifespan": 1,
-                        "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion,"numberofquestions":numberofquestions,"questiontype":type}
+                        "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion,"numberofquestions":numberofquestions,"questiontype":type,"mistakes":mistakes}
                         });
                     })
                     .catch( error => {
@@ -274,6 +279,7 @@ const dialogflowFulfillment = (request,response) => {
         var number = agent.getContext('expecting-succeding-question-answer').parameters.problemnumber
         var currentquestion = agent.getContext('expecting-succeding-question-answer').parameters.currentquestion
         var numberofquestions = agent.getContext('expecting-succeding-question-answer').parameters.numberofquestions
+        var mistakes = agent.getContext('expecting-succeding-question-answer').parameters.mistakes
 
         return getQuestionAnswer(number,currentquestion)
         .then( answer => {
@@ -286,7 +292,7 @@ const dialogflowFulfillment = (request,response) => {
                         agent.setContext({
                             "name": 'expecting-ready-to-continue-question',
                             "lifespan": 1,
-                            "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion+1,"numberofquestions":numberofquestions,"questiontype":type}
+                            "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion+1,"numberofquestions":numberofquestions,"questiontype":type,"mistakes":mistakes}
                         });
                     })
                     .catch( error => {
@@ -299,7 +305,7 @@ const dialogflowFulfillment = (request,response) => {
                 agent.setContext({
                     "name": 'expecting-summary-of-problem',
                     "lifespan": 1,
-                    "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions}
+                    "parameters":{"name": name,"problemnumber": number,"currentquestion":1,"numberofquestions":numberofquestions,"mistakes":mistakes}
                 });
             }
           }
@@ -314,7 +320,7 @@ const dialogflowFulfillment = (request,response) => {
                                 agent.setContext({
                                     "name": 'expecting-succeding-question-answer',
                                     "lifespan": 1,
-                                    "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion,"numberofquestions":numberofquestions}
+                                    "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion,"numberofquestions":numberofquestions,"mistakes":mistakes}
                                 });
                             })
                             .catch( error => {
@@ -328,7 +334,7 @@ const dialogflowFulfillment = (request,response) => {
                                 agent.setContext({
                                     "name": 'expecting-succeding-question-answer',
                                     "lifespan": 1,
-                                    "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion,"numberofquestions":numberofquestions}
+                                    "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion,"numberofquestions":numberofquestions,"mistakes":mistakes}
                                 });
                             })
                             .catch( error => {
@@ -342,7 +348,7 @@ const dialogflowFulfillment = (request,response) => {
                                 agent.setContext({
                                     "name": 'expecting-succeding-question-answer',
                                     "lifespan": 1,
-                                    "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion,"numberofquestions":numberofquestions}
+                                    "parameters":{"name": name,"problemnumber": number,"currentquestion":currentquestion,"numberofquestions":numberofquestions,"mistakes":mistakes}
                                 });
                             })
                             .catch( error => {
@@ -366,12 +372,13 @@ const dialogflowFulfillment = (request,response) => {
         var name = agent.getContext('expecting-ready-to-continue-problem').parameters.name
         var number = agent.getContext('expecting-ready-to-continue-problem').parameters.problemnumber
         var numberofquestions = agent.getContext('expecting-ready-to-continue-problem').parameters.numberofquestions
+        var mistakes = agent.getContext('expecting-ready-to-continue-problem').parameters.mistakes
         
         agent.add(" will be displayed on the screen. Please say done once you are done reading the problem.")
         agent.setContext({
             "name": 'expecting-done-reading-problem',
             "lifespan": 1,
-            "parameters":{"name": name,"problemnumber": number,"numberofquestions":numberofquestions}
+            "parameters":{"name": name,"problemnumber": number,"numberofquestions":numberofquestions,"mistakes":mistakes}
         });
     }
 
@@ -379,14 +386,15 @@ const dialogflowFulfillment = (request,response) => {
         var name = agent.getContext('expecting-summary-of-problem').parameters.name
         var number = agent.getContext('expecting-summary-of-problem').parameters.problemnumber
         var numberofquestions = agent.getContext('expecting-summary-of-problem').parameters.numberofquestions
-        console.log("inside showperoblem")
+        var mistakes = agent.getContext('expecting-summary-of-problem').parameters.mistakes
+        
         return getProblemSummary(number)
             .then( summary => {
                     agent.add(summary + ". Are you ready to move on to the next problem ?")
                     agent.setContext({
                         "name": 'expecting-ready-to-continue-problem',
                         "lifespan": 1,
-                        "parameters":{"name": name,"problemnumber": number+1,"currentquestion":1,"numberofquestions":numberofquestions}
+                        "parameters":{"name": name,"problemnumber": number+1,"currentquestion":1,"numberofquestions":numberofquestions,"mistakes":mistakes}
                     })
                 })
                 .catch( error => {
