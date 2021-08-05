@@ -1,0 +1,173 @@
+{
+  "settings": {
+    "languages": [
+      "en"
+    ],
+    "nlu": {
+      "useNoneFeature": false
+    },
+    "tag": "nlp",
+    "threshold": 0.5,
+    "autoLoad": true,
+    "autoSave": true,
+    "modelFileName": "model.nlp",
+    "calculateSentiment": true
+  },
+  "nluManager": {
+    "settings": {
+      "tag": "nlu-manager",
+      "useNoneFeature": false
+    },
+    "locales": [
+      "en"
+    ],
+    "languageNames": {},
+    "domainManagers": {
+      "en": {
+        "settings": {
+          "locale": "en",
+          "useNoneFeature": false,
+          "trainByDomain": false,
+          "tag": "domain-manager-en",
+          "nluByDomain": {
+            "default": {
+              "className": "NeuralNlu",
+              "settings": {}
+            }
+          },
+          "useStemDict": true
+        },
+        "stemDict": {
+          "is,mang,rudi,what": {
+            "intent": "mangrudy",
+            "domain": "default"
+          }
+        },
+        "intentDict": {
+          "mangrudy": "default"
+        },
+        "sentences": [
+          {
+            "domain": "default",
+            "utterance": "What is mang rudy ?",
+            "intent": "mangrudy"
+          }
+        ],
+        "domains": {
+          "master_domain": {
+            "settings": {
+              "locale": "en",
+              "tag": "nlu-en",
+              "keepStopwords": true,
+              "nonefeatureValue": 1,
+              "nonedeltaMultiplier": 1.2,
+              "spellCheck": false,
+              "spellCheckDistance": 1,
+              "filterZeros": true,
+              "log": true
+            },
+            "features": {
+              "what": 1,
+              "is": 1,
+              "mang": 1,
+              "rudi": 1
+            },
+            "intents": {
+              "mangrudy": 1
+            },
+            "intentFeatures": {
+              "mangrudy": {
+                "what": 1,
+                "is": 1,
+                "mang": 1,
+                "rudi": 1
+              }
+            },
+            "featuresToIntent": {
+              "what": [
+                "mangrudy"
+              ],
+              "is": [
+                "mangrudy"
+              ],
+              "mang": [
+                "mangrudy"
+              ],
+              "rudi": [
+                "mangrudy"
+              ]
+            },
+            "neuralNetwork": {
+              "settings": {
+                "useNoneFeature": false,
+                "locale": "en",
+                "tag": "nlu-en",
+                "keepStopwords": true,
+                "nonefeatureValue": 1,
+                "nonedeltaMultiplier": 1.2,
+                "spellCheck": false,
+                "spellCheckDistance": 1,
+                "filterZeros": true,
+                "log": true
+              },
+              "features": [
+                "what",
+                "is",
+                "mang",
+                "rudi"
+              ],
+              "intents": [
+                "mangrudy"
+              ],
+              "perceptrons": [
+                [
+                  3.177400827407837,
+                  3.177400827407837,
+                  3.177400827407837,
+                  3.177400827407837,
+                  1.5826658560825064
+                ]
+              ]
+            }
+          }
+        }
+      }
+    },
+    "intentDomains": {},
+    "extraSentences": [
+      [
+        "en",
+        "What is mang rudy ?"
+      ]
+    ]
+  },
+  "ner": {
+    "settings": {
+      "tag": "ner",
+      "entityPreffix": "%",
+      "entitySuffix": "%"
+    },
+    "rules": {}
+  },
+  "nlgManager": {
+    "settings": {
+      "tag": "nlg-manager"
+    },
+    "responses": {
+      "en": {
+        "mangrudy": [
+          {
+            "answer": "Mang Rudy is a Fisherman"
+          }
+        ]
+      }
+    }
+  },
+  "actionManager": {
+    "settings": {
+      "tag": "action-manager"
+    },
+    "actions": {}
+  },
+  "slotManager": {}
+}

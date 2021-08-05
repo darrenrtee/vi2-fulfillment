@@ -15,6 +15,7 @@
     "dialogflow-fulfillment": "^0.6.1",
     "express": "^4.17.1",
     "firebase-functions": "^3.14.0",
-    "mongoose": "^5.12.9"
+    "mongoose": "^5.12.9",
+    "node-nlp": "^4.22.1"
   }
 }

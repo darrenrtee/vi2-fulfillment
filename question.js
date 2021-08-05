@@ -10,6 +10,10 @@ const questionSchema = new Schema({
         type: String,
         required: true
     },
+    problemtype:{
+        type: String,
+        required: true
+    },
     number:{
         type: Number,
         required: true
@@ -26,12 +30,10 @@ const questionSchema = new Schema({
         type: String,
         required:true
     }],
-    questionanswers:[[
-        {
-            type: String,
-            required:true
-        }
-    ]],
+    questionanswers:[{
+        type: String,
+        required:true
+    }],
     questiontypes:[{
         type: String,
         required:true
@@ -40,23 +42,15 @@ const questionSchema = new Schema({
         type: String,
         required:true
     }],
-    negativeresponses:[{
-        type: String,
-        required:true
-    }],
     hints:[{
         type: String,
         required:true
     }],
-    requestions:[{
+    prompts:[{
         type: String,
         required:true
     }],
-    pumps:[{
-        type: String,
-        required:true
-    }]
-    ,pumpsanswer:[{
+    explanations:[{
         type: String,
         required:true
     }]
