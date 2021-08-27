@@ -16,6 +16,7 @@
     "express": "^4.17.1",
     "firebase-functions": "^3.14.0",
     "mongoose": "^5.12.9",
-    "node-nlp": "^4.22.1"
+    "node-nlp": "^4.22.1",
+    "wink-pos-tagger": "^2.2.2"
   }
 }

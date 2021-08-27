@@ -38,19 +38,28 @@
           "useStemDict": true
         },
         "stemDict": {
-          "is,mang,rudi,what": {
-            "intent": "mangrudy",
+          "fish": {
+            "intent": "CORRECT",
+            "domain": "default"
+          },
+          "and,bangus,galunggong": {
+            "intent": "CORRECT",
             "domain": "default"
           }
         },
         "intentDict": {
-          "mangrudy": "default"
+          "CORRECT": "default"
         },
         "sentences": [
           {
             "domain": "default",
-            "utterance": "What is mang rudy ?",
-            "intent": "mangrudy"
+            "utterance": "fish",
+            "intent": "CORRECT"
+          },
+          {
+            "domain": "default",
+            "utterance": "galunggong and bangus",
+            "intent": "CORRECT"
           }
         ],
         "domains": {
@@ -67,34 +76,34 @@
               "log": true
             },
             "features": {
-              "what": 1,
-              "is": 1,
-              "mang": 1,
-              "rudi": 1
+              "fish": 1,
+              "galunggong": 1,
+              "and": 1,
+              "bangus": 1
             },
             "intents": {
-              "mangrudy": 1
+              "CORRECT": 1
             },
             "intentFeatures": {
-              "mangrudy": {
-                "what": 1,
-                "is": 1,
-                "mang": 1,
-                "rudi": 1
+              "CORRECT": {
+                "fish": 1,
+                "galunggong": 1,
+                "and": 1,
+                "bangus": 1
               }
             },
             "featuresToIntent": {
-              "what": [
-                "mangrudy"
+              "fish": [
+                "CORRECT"
               ],
-              "is": [
-                "mangrudy"
+              "galunggong": [
+                "CORRECT"
               ],
-              "mang": [
-                "mangrudy"
+              "and": [
+                "CORRECT"
               ],
-              "rudi": [
-                "mangrudy"
+              "bangus": [
+                "CORRECT"
               ]
             },
             "neuralNetwork": {
@@ -111,21 +120,21 @@
                 "log": true
               },
               "features": [
-                "what",
-                "is",
-                "mang",
-                "rudi"
+                "fish",
+                "galunggong",
+                "and",
+                "bangus"
               ],
               "intents": [
-                "mangrudy"
+                "CORRECT"
               ],
               "perceptrons": [
                 [
-                  3.177400827407837,
-                  3.177400827407837,
-                  3.177400827407837,
-                  3.177400827407837,
-                  1.5826658560825064
+                  8.487215995788574,
+                  2.872195243835449,
+                  2.872195243835449,
+                  2.872195243835449,
+                  5.684821184019125
                 ]
               ]
             }
@@ -137,7 +146,11 @@
     "extraSentences": [
       [
         "en",
-        "What is mang rudy ?"
+        "fish"
+      ],
+      [
+        "en",
+        "galunggong and bangus"
       ]
     ]
   },
@@ -155,9 +168,9 @@
     },
     "responses": {
       "en": {
-        "mangrudy": [
+        "CORRECT": [
           {
-            "answer": "Mang Rudy is a Fisherman"
+            "answer": "CORRECT"
           }
         ]
       }
