@@ -845,7 +845,7 @@ const dialogflowFulfillment = (request,response) => {
             })
         }
         else if(agent.query.toLowerCase() == "yes"){
-            agent.add("Okay lets take a break. Please type done when you are ready to proceed with the next problem.")
+            agent.add("Okay lets take a break. Please type DONE when you are ready to proceed with the next problem.")
             agent.setContext({
                 "name": 'expecting-ready-problem-confirmation',
                 "lifespan": 1,
@@ -869,7 +869,7 @@ const dialogflowFulfillment = (request,response) => {
             })
         }
         else if(agent.query.toLowerCase() == "yes"){
-            agent.add("Okay, let me explain the problem again. " + problemsummary + " Are you ready to move to the next problem ?")
+            agent.add("Okay, let me explain the problem again. " + problemsummary + ".Are you ready to move to the next problem ?")
             agent.setContext({
                 "name": 'expecting-ready-problem-confirmation',
                 "lifespan": 1,
