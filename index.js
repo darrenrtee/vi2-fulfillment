@@ -179,7 +179,7 @@ const dialogflowFulfillment = (request,response) => {
     }
 
     function introduceChatBotFunc(agent){
-        agent.add("Hi! I'm Vi. What's your name?")
+        agent.add("Hi! I'm Vi2. What's your name?")
     }
     
     function getStudentName(agent){
