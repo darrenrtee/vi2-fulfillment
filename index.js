@@ -179,12 +179,12 @@ const dialogflowFulfillment = (request,response) => {
     }
 
     function introduceChatBotFunc(agent){
-        agent.add("Hi! I'm Vi2. What's your name?")
+        agent.add("Hi!I'm Vi2. What's your name?")
     }
     
     function getStudentName(agent){
         var name = agent.parameters.name
-        agent.add("Hello " + name + " ! It's nice to meet you. Do you want to start the lesson?")
+        agent.add("Hello " + name + " ! It's nice to meet you.Do you want to start the lesson?")
         agent.setContext({
             "name": 'expecting-ready-problem-confirmation',
             "lifespan": 1,
@@ -878,7 +878,7 @@ const dialogflowFulfillment = (request,response) => {
         var problemsummary = agent.getContext('expecting-explain-problem-confirmation').parameters.problemsummary
 
         if(agent.query.toLowerCase() == "no"){
-            agent.add("Okay, are you ready to move on to the next problem ?")
+            agent.add("Okay, are you ready to move on to the next problem?")
             agent.setContext({
                 "name": 'expecting-ready-problem-confirmation',
                 "lifespan": 1,
