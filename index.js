@@ -179,7 +179,7 @@ const dialogflowFulfillment = (request,response) => {
     }
 
     function introduceChatBotFunc(agent){
-        agent.add("Hi! I'm Vi. What's your name?")
+        agent.add("Hi! I'm Vi2. What's your name?")
     }
     
     function getStudentName(agent){
@@ -206,8 +206,8 @@ const dialogflowFulfillment = (request,response) => {
         var name = agent.getContext('expecting-ready-problem-confirmation').parameters.name
         var mistakes = agent.getContext('expecting-ready-problem-confirmation').parameters.mistakes
         var problemnumber = agent.getContext('expecting-ready-problem-confirmation').parameters.problemnumber
-        var num1 = Math.floor(Math.random() * 10) + 1
-        var num2 = Math.floor(Math.random() * 10) + 1
+        var num1 = Math.floor(Math.random() * 9) + 1
+        var num2 = Math.floor(Math.random() * 9) + 1
     
         return getAction(problemnumber)
         .then( action => {
@@ -373,45 +373,40 @@ const dialogflowFulfillment = (request,response) => {
         var inputclassification = agent.getContext('expecting-question-answer').parameters.inputclassification
         
         var tempanswerarray = answer
-
-        
-
         var verdict
-        var tempverdict
-        
-        if(answer[0] == "answer"){
-            if(agent.query == tempanswerarray[0])
-             tempverdict = "CORRECT"
+        var numanswer = ""
 
-        }else{
+        if(answer[0] == "answer"){
+            if(operation == "addition")
+                numanswer = num1 + num2
+            else if(operation == "subtraction")
+                numanswer = num1 - num2
+            else if(operation == "multiplication")
+                numanswer = num1 * num2
+            else if(operation == "division")
+                numanswer = num1 / num2
+
+            if(agent.query == numanswer)
+                verdict = "CORRECT"
+        }
+        else{
             for(var i = 0; i < answer.length; i++){
             
-                if(answer[i] == "answer"){
-                    if(operation == "addition")
-                        tempanswerarray[i] = num1 + num2
-                    else if(operation == "subtraction")
-                        tempanswerarray[i] = num1 - num2
-                    else if(operation == "multiplication")
-                        tempanswerarray[i] = num1 * num2
-                    else if(operation == "division")
-                        tempanswerarray[i] = num1 / num2
-                }
-                else{
-                    var temp = answer[i]
-                    temp = temp.replace(/_action_/g,action)
-                    temp = temp.replace(/_character1_/g,character1)
-                    temp = temp.replace(/_character2_/g,character2)
-                    temp = temp.replace(/_object_/g,object)
-                    temp = temp.replace(/_object1_/g,object1)
-                    temp = temp.replace(/_object2_/g,object2)
-                    temp = temp.replace(/_pasttense_/g,pasttense)
-                    temp = temp.replace(/_n1_/g,num1)
-                    temp = temp.replace(/_n2_/g,num2)
-                    temp = temp.replace(/_objective_/g,objective)
-                    temp = temp.replace(/_operation_/g,operation)
-    
-                    tempanswerarray[i] = temp
-                }
+                var temp = answer[i]
+                temp = temp.replace(/_action_/g,action)
+                temp = temp.replace(/_character1_/g,character1)
+                temp = temp.replace(/_character2_/g,character2)
+                temp = temp.replace(/_object_/g,object)
+                temp = temp.replace(/_object1_/g,object1)
+                temp = temp.replace(/_object2_/g,object2)
+                temp = temp.replace(/_pasttense_/g,pasttense)
+                temp = temp.replace(/_n1_/g,num1)
+                temp = temp.replace(/_n2_/g,num2)
+                temp = temp.replace(/_objective_/g,objective)
+                temp = temp.replace(/_operation_/g,operation)
+
+                tempanswerarray[i] = temp
+                
             }
             verdict= await processAnswer(tempanswerarray,agent.query)
     
@@ -419,7 +414,6 @@ const dialogflowFulfillment = (request,response) => {
                 verdict = "WRONG"
         }
             
-        
        
         if(agent.query.includes("?")){
 
@@ -476,10 +470,10 @@ const dialogflowFulfillment = (request,response) => {
                 });
             }
         }
-        else if(verdict == "CORRECT"||tempverdict == "CORRECT"){
-            console.log("pasok 1")
+        else if(verdict == "CORRECT"){
+            
             if(currentquestion + 1 <= 12){
-                console.log("pasok 2")
+                
                 return getRestatement(questiontype)
                     .then( restatement => {
                         return getResponses("positiveresponse")
@@ -500,6 +494,8 @@ const dialogflowFulfillment = (request,response) => {
                                 restatementResponse = restatementResponse.replace(/_n2_/g,num2)
                                 restatementResponse = restatementResponse.replace(/_objective_/g,objective)
                                 restatementResponse = restatementResponse.replace(/_operation_/g,operation)
+                                restatementResponse = restatementResponse.replace(/_answer_/g,numanswer)
+                                
                                 
                                 var positiveResponseindex = Math.floor(Math.random() * positiveResponses.length)
                                 var positiveResponse = positiveResponses[positiveResponseindex].response
@@ -528,13 +524,33 @@ const dialogflowFulfillment = (request,response) => {
                     agent.add(error.toString()); // Error: Unknown response type: "undefined"
                 });
             } 
-            else{
-                agent.add("Congratulations! You solved the problem!")
-                agent.setContext({
-                    "name": 'expecting-summary-of-problem',
-                    "lifespan": 1,
-                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"mistakes":mistakes,"tries":tries,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"summary":"yes"}
+            else{return getRestatement(questiontype)
+                .then( restatement => {
+                    var restatementResponse = restatement
+                    restatementResponse = restatementResponse.replace(/_action_/g,action)
+                    restatementResponse = restatementResponse.replace(/_character1_/g,character1)
+                    restatementResponse = restatementResponse.replace(/_character2_/g,character2)
+                    restatementResponse = restatementResponse.replace(/_object_/g,object)
+                    restatementResponse = restatementResponse.replace(/_object1_/g,object1)
+                    restatementResponse = restatementResponse.replace(/_object2_/g,object2)
+                    restatementResponse = restatementResponse.replace(/_pasttense_/g,pasttense)
+                    restatementResponse = restatementResponse.replace(/_n1_/g,num1)
+                    restatementResponse = restatementResponse.replace(/_n2_/g,num2)
+                    restatementResponse = restatementResponse.replace(/_objective_/g,objective)
+                    restatementResponse = restatementResponse.replace(/_operation_/g,operation)
+                    restatementResponse = restatementResponse.replace(/_answer_/g,numanswer)
+
+                    agent.add("Congratulations! You solved the problem! " + restatementResponse)
+                    agent.setContext({
+                        "name": 'expecting-summary-of-problem',
+                        "lifespan": 1,
+                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"mistakes":mistakes,"tries":tries,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"summary":"yes"}
+                    });
+                })
+                .catch( error => {
+                agent.add(error.toString()); // Error: Unknown response type: "undefined"
                 });
+                
             }
         }
         else {
@@ -601,6 +617,7 @@ const dialogflowFulfillment = (request,response) => {
                                     hint = hint.replace(/_n2_/g,num2)
                                     hint = hint.replace(/_objective_/g,objective)
                                     hint = hint.replace(/_operation_/g,operation)
+                                    hint = hint.replace(/_answer_/g,numanswer)
                    
 
                                     finalresponse = negativeResponse + " " + hintPrompt + " " + hint
