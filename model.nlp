@@ -38,11 +38,7 @@
           "useStemDict": true
         },
         "stemDict": {
-          "fish": {
-            "intent": "CORRECT",
-            "domain": "default"
-          },
-          "and,bangus,galunggong": {
+          "5": {
             "intent": "CORRECT",
             "domain": "default"
           }
@@ -53,12 +49,7 @@
         "sentences": [
           {
             "domain": "default",
-            "utterance": "fish",
-            "intent": "CORRECT"
-          },
-          {
-            "domain": "default",
-            "utterance": "galunggong and bangus",
+            "utterance": "5",
             "intent": "CORRECT"
           }
         ],
@@ -76,33 +67,18 @@
               "log": true
             },
             "features": {
-              "fish": 1,
-              "galunggong": 1,
-              "and": 1,
-              "bangus": 1
+              "5": 1
             },
             "intents": {
               "CORRECT": 1
             },
             "intentFeatures": {
               "CORRECT": {
-                "fish": 1,
-                "galunggong": 1,
-                "and": 1,
-                "bangus": 1
+                "5": 1
               }
             },
             "featuresToIntent": {
-              "fish": [
-                "CORRECT"
-              ],
-              "galunggong": [
-                "CORRECT"
-              ],
-              "and": [
-                "CORRECT"
-              ],
-              "bangus": [
+              "5": [
                 "CORRECT"
               ]
             },
@@ -120,21 +96,15 @@
                 "log": true
               },
               "features": [
-                "fish",
-                "galunggong",
-                "and",
-                "bangus"
+                "5"
               ],
               "intents": [
                 "CORRECT"
               ],
               "perceptrons": [
                 [
-                  8.487215995788574,
-                  2.872195243835449,
-                  2.872195243835449,
-                  2.872195243835449,
-                  5.684821184019125
+                  9.46274471282959,
+                  4.736227717439353
                 ]
               ]
             }
@@ -146,11 +116,7 @@
     "extraSentences": [
       [
         "en",
-        "fish"
-      ],
-      [
-        "en",
-        "galunggong and bangus"
+        "5"
       ]
     ]
   },

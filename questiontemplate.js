@@ -22,7 +22,7 @@ const questionTemplateSchema = new Schema({
         type: String,
         required: true  
     },
-    input:{
+    uielement:{
         type: String,
         required: true  
     }

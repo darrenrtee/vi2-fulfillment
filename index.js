@@ -141,7 +141,7 @@ const dialogflowFulfillment = (request,response) => {
     function getInput(questionType){
         return QUESTIONTEMPLATES.findOne({type: questionType}).exec()
           .then( doc => {
-            return Promise.resolve(doc.input);
+            return Promise.resolve(doc.uielement);
         })
     }
 
@@ -287,7 +287,7 @@ const dialogflowFulfillment = (request,response) => {
         });
     }
     
-    
+
     function askQuestion(agent){
         var name = agent.getContext('expecting-ready-question').parameters.name
         var problemnumber = agent.getContext('expecting-ready-question').parameters.problemnumber
@@ -329,7 +329,6 @@ const dialogflowFulfillment = (request,response) => {
                     temp = temp.replace("_object1_",object1)
                     temp = temp.replace("_object2_",object2)
                     temp = temp.replace("_pasttense_",pasttense)
-                    
                     agent.add(temp)
                     agent.setContext({
                         "name": 'expecting-question-answer',
@@ -375,39 +374,51 @@ const dialogflowFulfillment = (request,response) => {
         
         var tempanswerarray = answer
 
-        for(var i = 0; i < answer.length; i++){
-            if(answer[i] == "answer"){
-                if(operation == "addition")
-                    tempanswerarray[i] = num1 + num2
-                else if(operation == "subtraction")
-                    tempanswerarray[i] = num1 - num2
-                else if(operation == "multiplication")
-                    tempanswerarray[i] = num1 * num2
-                else if(operation == "division")
-                    tempanswerarray[i] = num1 / num2
-            }
-            else{
-                var temp = answer[i]
-                temp = temp.replace(/_action_/g,action)
-                temp = temp.replace(/_character1_/g,character1)
-                temp = temp.replace(/_character2_/g,character2)
-                temp = temp.replace(/_object_/g,object)
-                temp = temp.replace(/_object1_/g,object1)
-                temp = temp.replace(/_object2_/g,object2)
-                temp = temp.replace(/_pasttense_/g,pasttense)
-                temp = temp.replace(/_n1_/g,num1)
-                temp = temp.replace(/_n2_/g,num2)
-                temp = temp.replace(/_objective_/g,objective)
-                temp = temp.replace(/_operation_/g,operation)
+        
 
-                tempanswerarray[i] = temp
-            }
-        }
+        var verdict
+        var tempverdict
+        
+        if(answer[0] == "answer"){
+            if(agent.query == tempanswerarray[0])
+             tempverdict = "CORRECT"
 
-        var verdict = await processAnswer(tempanswerarray,agent.query)
+        }else{
+            for(var i = 0; i < answer.length; i++){
+            
+                if(answer[i] == "answer"){
+                    if(operation == "addition")
+                        tempanswerarray[i] = num1 + num2
+                    else if(operation == "subtraction")
+                        tempanswerarray[i] = num1 - num2
+                    else if(operation == "multiplication")
+                        tempanswerarray[i] = num1 * num2
+                    else if(operation == "division")
+                        tempanswerarray[i] = num1 / num2
+                }
+                else{
+                    var temp = answer[i]
+                    temp = temp.replace(/_action_/g,action)
+                    temp = temp.replace(/_character1_/g,character1)
+                    temp = temp.replace(/_character2_/g,character2)
+                    temp = temp.replace(/_object_/g,object)
+                    temp = temp.replace(/_object1_/g,object1)
+                    temp = temp.replace(/_object2_/g,object2)
+                    temp = temp.replace(/_pasttense_/g,pasttense)
+                    temp = temp.replace(/_n1_/g,num1)
+                    temp = temp.replace(/_n2_/g,num2)
+                    temp = temp.replace(/_objective_/g,objective)
+                    temp = temp.replace(/_operation_/g,operation)
     
-        if(verdict == null)
-            verdict = "WRONG"
+                    tempanswerarray[i] = temp
+                }
+            }
+            verdict= await processAnswer(tempanswerarray,agent.query)
+    
+            if(verdict == null)
+                verdict = "WRONG"
+        }
+            
         
        
         if(agent.query.includes("?")){
@@ -465,7 +476,7 @@ const dialogflowFulfillment = (request,response) => {
                 });
             }
         }
-        else if(verdict == "CORRECT"){
+        else if(verdict == "CORRECT"||tempverdict == "CORRECT"){
             console.log("pasok 1")
             if(currentquestion + 1 <= 12){
                 console.log("pasok 2")
