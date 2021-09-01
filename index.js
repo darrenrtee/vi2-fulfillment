@@ -184,7 +184,7 @@ const dialogflowFulfillment = (request,response) => {
     
     function getStudentName(agent){
         var name = agent.parameters.name
-        agent.add("Hello " + name + " ! It's nice to meet you. Do you want to start the lesson?")
+        agent.add("Hello " + name + "! It's nice to meet you. Do you want to start the lesson?")
         agent.setContext({
             "name": 'expecting-ready-problem-confirmation',
             "lifespan": 1,
@@ -194,7 +194,7 @@ const dialogflowFulfillment = (request,response) => {
 
     function getStudentNameAll(agent){
         var name = agent.parameters.person.name
-        agent.add("Hello " + name + " ! It's nice to meet you. Do you want to start the lesson?")
+        agent.add("Hello " + name + "! It's nice to meet you. Do you want to start the lesson?")
         agent.setContext({
             "name": 'expecting-ready-problem-confirmation',
             "lifespan": 1,
@@ -232,6 +232,10 @@ const dialogflowFulfillment = (request,response) => {
                                                 .then( problemtype => {
                                                     if(operation == "subtraction"){
                                                         if(num1 - num2 < 0){
+                                                            num1 = 8
+                                                            num2 = 4 
+                                                        }
+                                                        else if(num1 - num2 == 0){
                                                             num1 = 8
                                                             num2 = 4 
                                                         }
