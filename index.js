@@ -179,16 +179,16 @@ const dialogflowFulfillment = (request,response) => {
     }
 
     function introduceChatBotFunc(agent){
-        agent.add("Hi!I'm Vi2. What's your name?")
+        agent.add("Hi! I'm Vi2. What's your name?")
     }
     
     function getStudentName(agent){
         var name = agent.parameters.name
-        agent.add("Hello " + name + " ! It's nice to meet you.Do you want to start the lesson?")
+        agent.add("Hello " + name + " ! It's nice to meet you. Do you want to start the lesson?")
         agent.setContext({
             "name": 'expecting-ready-problem-confirmation',
             "lifespan": 1,
-            "parameters":{"name": name,"problemnumber": 6}
+            "parameters":{"name": name,"problemnumber": 1}
         });
     }
 
@@ -198,7 +198,7 @@ const dialogflowFulfillment = (request,response) => {
         agent.setContext({
             "name": 'expecting-ready-problem-confirmation',
             "lifespan": 1,
-            "parameters":{"name": name,"problemnumber": 6}
+            "parameters":{"name": name,"problemnumber": 1}
         });
     }
 
@@ -636,12 +636,15 @@ const dialogflowFulfillment = (request,response) => {
                     console.log("pasok sa 0")
                     if(currentquestion == 4 || currentquestion == 6 || currentquestion == 12){
                         mistakeC ++
+                        console.log("MistakeC : " + mistakeC)
                     }
                     else if(currentquestion == 7 || currentquestion == 8){
                         mistakeU ++
+                        console.log("MistakeU : " + mistakeU)
                     }
                     else if(currentquestion == 10 || currentquestion == 11){
                         mistakeF ++
+                        console.log("MistakeF : " + mistakeF)
                     }
 
                         if(inputclassification == "character"){
@@ -724,16 +727,18 @@ const dialogflowFulfillment = (request,response) => {
                     }
                     else if(tries == 1){
 
-                    console.log("pasok sa 1")
-                    if(currentquestion == 4 || currentquestion == 6 || currentquestion == 12){
-                        mistakeC ++
-                    }
-                    else if(currentquestion == 7 || currentquestion == 8){
-                        mistakeU ++
-                    }
-                    else if(currentquestion == 10 || currentquestion == 11){
-                        mistakeF ++
-                    }
+                        if(currentquestion == 4 || currentquestion == 6 || currentquestion == 12){
+                            mistakeC ++
+                            console.log("MistakeC : " + mistakeC)
+                        }
+                        else if(currentquestion == 7 || currentquestion == 8){
+                            mistakeU ++
+                            console.log("MistakeU : " + mistakeU)
+                        }
+                        else if(currentquestion == 10 || currentquestion == 11){
+                            mistakeF ++
+                            console.log("MistakeF : " + mistakeF)
+                        }
 
                         return getRestatement(questiontype)
                         .then( restatement => {
@@ -1001,17 +1006,28 @@ const dialogflowFulfillment = (request,response) => {
     }
 
     function defaultFallbackIntent(agent){
-        var contextname = agent.contexts[0].name
-        var parameters = agent.contexts[0].parameters
+        var contextname = ""
+        var parameters = ""
+
+        if(agent.contexts[0].name == "__system_counters__"){
+            contextname = agent.contexts[1].name
+            parameters = agent.contexts[1].parameters
+        }
+        else{
+            contextname = agent.contexts[0].name
+            parameters = agent.contexts[0].parameters
+        }
+
         const responses = ["Sorry, could you say that again?","I didn't get that. Can you say it again?","What was that?","I missed that, say that again?"]
         var index = Math.floor(Math.random() * responses.length)
-
+        
         agent.add(responses[index])
         agent.setContext({
             "name": contextname,
             "lifespan": 1,
             "parameters":parameters
         })
+
     }
 
     function notReadyToProceedProblem(agent){
