@@ -934,7 +934,7 @@ const dialogflowFulfillment = (request,response) => {
     function endLesson(agent){
         var name = agent.getContext('expecting-ready-problem-confirmation').parameters.name
         console.log("kekw")
-        agent.add("Your have answered all the problem. Thank you for studying with me " + name +".")
+        agent.add("You have answered all the problem. Thank you for studying with me " + name +".")
     }
     
     function reQuestion(agent){
