@@ -33,6 +33,11 @@ app.listen(port, () => {
 const dialogflowFulfillment = (request,response) => {
     const agent = new WebhookClient({request,response})
     
+    /**
+     * This function will retrieve the action variable of the word problem from the problem template DB given the problem number.
+     * 
+     * @param {number} number 
+     */
     function getAction(number){
         return PROBLEMTEMPLATE.findOne({number : number}).exec()
           .then( doc => {
@@ -40,6 +45,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    /**
+     * This function will retrieve the object variable of the word problem from the problem template DB given the problem number.
+     * 
+     * @param {number} number 
+     */
     function getObject(number){
         return PROBLEMTEMPLATE.findOne({number : number}).exec()
           .then( doc => {
@@ -47,6 +57,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    /**
+     * This function will retrieve the object1 variable of the word problem from the problem template DB given the problem number.
+     * 
+     * @param {number} number 
+     */
     function getObject1(number){
         return PROBLEMTEMPLATE.findOne({number : number}).exec()
           .then( doc => {
@@ -54,6 +69,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+     /**
+     * This function will retrieve the object2 variable of the word problem from the problem template DB given the problem number.
+     * 
+     * @param {number} number 
+     */
     function getObject2(number){
         return PROBLEMTEMPLATE.findOne({number : number}).exec()
           .then( doc => {
@@ -61,6 +81,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+     /**
+     * This function will retrieve the character1 variable of the word problem from the problem template DB given the problem number.
+     * 
+     * @param {number} number 
+     */
     function getCharacter1(number){
         return PROBLEMTEMPLATE.findOne({number : number}).exec()
           .then( doc => {
@@ -68,6 +93,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    /**
+     * This function will retrieve the character2 variable of the word problem from the problem template DB given the problem number.
+     * 
+     * @param {number} number 
+     */
     function getCharacter2(number){
         return PROBLEMTEMPLATE.findOne({number : number}).exec()
           .then( doc => {
@@ -75,6 +105,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    /**
+     * This function will retrieve the pasttense variable of the word problem from the problem template DB given the problem number.
+     * 
+     * @param {number} number 
+     */
     function getPastTense(number){
         return PROBLEMTEMPLATE.findOne({number : number}).exec()
           .then( doc => {
@@ -82,6 +117,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    /**
+     * This function will retrieve the objective variable of the word problem from the problem template DB given the problem number.
+     * 
+     * @param {number} number 
+     */
     function getObjective(number){
         return PROBLEMTEMPLATE.findOne({number : number}).exec()
           .then( doc => {
@@ -89,20 +129,23 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+      /**
+     * This function will retrieve the operation variable of the word problem from the problem template DB given the problem number.
+     * 
+     * @param {number} number 
+     */
     function getOperation(number){
         return PROBLEMTEMPLATE.findOne({number : number}).exec()
           .then( doc => {
             return Promise.resolve(doc.operation);
         })
     }
+      /**
+     * This function will retrieve the problem template of the word problem from the problem template DB given the problem number.
+     * 
+     * @param {number} number 
+     */
 
-    function getNumberOfQuestions(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.numberofquestions);
-        })
-    }
-    
     function getProblem(number){
         return PROBLEMTEMPLATE.findOne({number : number}).exec()
           .then( doc => {
@@ -110,6 +153,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    /**
+     * This function will retrieve the problem type of the word problem from the problem template DB given the problem number.
+     * 
+     * @param {number} number 
+     */
     function getProblemType(number){
         return PROBLEMTEMPLATE.findOne({number : number}).exec()
           .then( doc => {
@@ -117,13 +165,22 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    /**
+     * This function will retrieve the summary of the word problem from the problem template DB given the problem number.
+     * 
+     * @param {number} number 
+     */
     function getProblemSummary(number){
         return PROBLEMTEMPLATE.findOne({number : number}).exec()
           .then( doc => {
             return Promise.resolve(doc.summary);
         })
     }
-
+    /**
+     * This function will retrieve the question template from the question templates DB given the questionType.
+     * 
+     * @param {string} questionType 
+     */
     function getQuestionTemplate(questionType){
         return QUESTIONTEMPLATES.findOne({type: questionType}).exec()
           .then( doc => {
@@ -131,6 +188,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    /**
+     * This function will retrieve the answer variable from the question templates DB given the questionType.
+     * 
+     * @param {string} questionType 
+     */
     function getAnswer(questionType){
         return QUESTIONTEMPLATES.findOne({type: questionType}).exec()
           .then( doc => {
@@ -138,6 +200,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    /**
+     * This function will retrieve the uielement variable from the question templates DB given the questionType.
+     * 
+     * @param {string} questionType 
+     */
     function getInput(questionType){
         return QUESTIONTEMPLATES.findOne({type: questionType}).exec()
           .then( doc => {
@@ -145,6 +212,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    /**
+     * This function will retrieve the response template from the response templates DB given the responseType.
+     * 
+     * @param {string} responseType 
+     */
     function getResponses(responseType){
         return RESPONSETEMPLATES.find({type: responseType}).exec()
           .then( doc => {
@@ -152,14 +224,23 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
-    function getRestatement(responseType){
-        return QUESTIONTEMPLATES.findOne({type: responseType}).exec()
+    /**
+     * This function will retrieve the restatement template from the question templates DB given the questionType.
+     * 
+     * @param {string} questionType 
+     */
+    function getRestatement(questionType){
+        return QUESTIONTEMPLATES.findOne({type: questionType}).exec()
           .then( doc => {
             return Promise.resolve(doc.restatement);
         })
     }
 
-
+    /**
+     * This function will retrieve the ontology object from the question templates DB given the query to match to the first variable of the ontology object.
+     * 
+     * @param {string} query 
+     */
     function getOntology(query){
         return COMMONSENSEONTOLOGY.findOne({first: query}).exec()
           .then( doc => {
@@ -167,6 +248,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    /**
+     * This function will retrieve the ontology object from the question templates DB given the query to match to the first variable of the ontology object.
+     * This function is used by the check answer intent when the students asks a question
+     * @param {string} query 
+     */
     function getQuestionOntology(query){
         return COMMONSENSEONTOLOGY.findOne({first: query}).exec()
           .then( doc => {
@@ -174,14 +260,20 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
-    function getTags(input){
-        console.log(tagger.tagSentence(input))
-    }
-
+    /**
+     * This function is responsible for handling the introduce chat bot intent.
+     * This is the first intent that is triggered and is used to introduce Vi2 and ask for the students name
+     * @param {agent} agent 
+     */
     function introduceChatBotFunc(agent){
         agent.add("Hi! I'm Vi2. What's your name?")
     }
     
+    /**
+     * This function is responsible for handling the get student name intent.
+     * This function is responsible for saving the students name and passing it as context parameters
+     * @param {agent} agent 
+     */
     function getStudentName(agent){
         var name = agent.parameters.name
         agent.add("Hello " + name + "! It's nice to meet you. Do you want to start the lesson?")
@@ -192,6 +284,12 @@ const dialogflowFulfillment = (request,response) => {
         });
     }
 
+    /**
+     * This function is responsible for handling the get student name all intent.
+     * This function is responsible for saving the students name and passing it as context parameters
+     * This function is similar to the getStudentName function, but this function will be used when the name of the student is not inside their name database.
+     * @param {agent} agent 
+     */
     function getStudentNameAll(agent){
         var name = agent.parameters.person.name
         agent.add("Hello " + name + "! It's nice to meet you. Do you want to start the lesson?")
@@ -202,6 +300,12 @@ const dialogflowFulfillment = (request,response) => {
         });
     }
 
+    /**
+     * This function is responsible for handling the get show problem intent.
+     * This function is responsible for retriving the problem template and filling the template with 2 randomlly generated numbers ranging from 1-9
+     * This function also retrieves all the parameters of a problem and passes it as context parameters
+     * @param {agent} agent 
+     */
     function showProblem(agent){
         var name = agent.getContext('expecting-ready-problem-confirmation').parameters.name
         var problemnumber = agent.getContext('expecting-ready-problem-confirmation').parameters.problemnumber
@@ -311,7 +415,13 @@ const dialogflowFulfillment = (request,response) => {
         });
     }
     
-
+    /**
+     * This function is responsible for handling the ask question intent.
+     * This function is responsible for retriving the question template and filling the template the proper parameters of the word problem
+     * This function also retrieves all question variables and passes it as context parameters
+     * This fucntion also initializes the counter for the number of tries the student takes to answer a question.
+     * @param {agent} agent 
+     */
     function askQuestion(agent){
         var name = agent.getContext('expecting-ready-question').parameters.name
         var problemnumber = agent.getContext('expecting-ready-question').parameters.problemnumber
@@ -378,6 +488,14 @@ const dialogflowFulfillment = (request,response) => {
         });
     }
 
+    /**
+     * This function is responsible for handling the check question intent.
+     * This function is responsible for retrieving and filling in the the answer variable in the context with the correct answer.
+     * This function calls node-nlp and passses the correct answer and the student's input as parameters. The function will then recieve a vedict from node-nlp.
+     * This function checks where the students answer is correct and also checks if the student is asking a question.
+     * This funcion is filling up response templates and sending the proper responses back to dialogflow depending on the student's input
+     * @param {agent} agent 
+     */
     async function checkQuestionAnswer(agent){
         var name = agent.getContext('expecting-question-answer').parameters.name
         var problemnumber = agent.getContext('expecting-question-answer').parameters.problemnumber
@@ -835,6 +953,12 @@ const dialogflowFulfillment = (request,response) => {
         }
     }
 
+    /**
+     * This function is responsible for handling the show problem summary intent.
+     * This function is responsible for retrieving filling up the parameters of the problem summary template and returning it to dialogflow.
+     *
+     * @param {agent} agent 
+     */
     function showProblemSummary(agent){
         var name = agent.getContext('expecting-summary-of-problem').parameters.name
         var problemnumber = agent.getContext('expecting-summary-of-problem').parameters.problemnumber
@@ -935,12 +1059,25 @@ const dialogflowFulfillment = (request,response) => {
         
     }
 
+    /**
+     * This function is responsible for handling the end lesson intent.
+     * This function is the last triggered function when the lesson plan is complete.
+     * This function is responsible for deleteting the context as the end lesson intent is the end of the conversation
+     *
+     * @param {agent} agent 
+     */
     function endLesson(agent){
         var name = agent.getContext('expecting-ready-problem-confirmation').parameters.name
         console.log("kekw")
         agent.add("You have answered all the problems. Thank you for studying with me " + name +".")
     }
     
+    /**
+     * This function is responsible for handling the requestion intent.
+     * This function is responsible for filling up question templates and sending it back to dialogflow.
+     *
+     * @param {agent} agent 
+     */
     function reQuestion(agent){
         var name = agent.getContext('expecting-requestion').parameters.name
         var problemnumber = agent.getContext('expecting-requestion').parameters.problemnumber
@@ -1009,6 +1146,12 @@ const dialogflowFulfillment = (request,response) => {
         });
     }
 
+    /**
+     * This function is responsible for handling the default fallback intent.
+     * This function is maintaining the current context and passing it as the output context.
+     *
+     * @param {agent} agent 
+     */
     function defaultFallbackIntent(agent){
         var contextname = ""
         var parameters = ""
@@ -1034,6 +1177,11 @@ const dialogflowFulfillment = (request,response) => {
 
     }
 
+    /**
+     * This function is responsible for handling the not ready to proceed problem intent.
+     *
+     * @param {agent} agent 
+     */
     function notReadyToProceedProblem(agent){
         var name = agent.getContext('expecting-ready-problem-confirmation').parameters.name
         var problemnumber = agent.getContext('expecting-ready-problem-confirmation').parameters.problemnumber
@@ -1052,6 +1200,11 @@ const dialogflowFulfillment = (request,response) => {
         }
     }
 
+     /**
+     * This function is responsible for handling the break from problem intent.
+     *
+     * @param {agent} agent 
+     */
     function breakFromProblem(agent){
         var name = agent.getContext('expecting-break-problem-confirmation').parameters.name
         var problemnumber = agent.getContext('expecting-break-problem-confirmation').parameters.problemnumber
@@ -1075,7 +1228,12 @@ const dialogflowFulfillment = (request,response) => {
         }
     }
 
-    function explainProblem(agent){
+    /**
+     * This function is responsible for handling the explain problem intent.
+     * This function fills the problem explanation template and sends it back to dialogflow
+     * @param {agent} agent 
+     */
+    function  explainProblem(agent){
         var name = agent.getContext('expecting-explain-problem-confirmation').parameters.name
         var problemnumber = agent.getContext('expecting-explain-problem-confirmation').parameters.problemnumber
         var problemsummary = agent.getContext('expecting-explain-problem-confirmation').parameters.problemsummary
@@ -1098,6 +1256,11 @@ const dialogflowFulfillment = (request,response) => {
         }
     }
 
+    /**
+     * This function is responsible for handling the not ready to proceed question intent.
+     *
+     * @param {agent} agent 
+     */
     function notReadyToProceedQuestion(agent){
         var name = agent.getContext('expecting-ready-question').parameters.name
         var problemnumber = agent.getContext('expecting-ready-question').parameters.problemnumber
@@ -1126,6 +1289,11 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    /**
+     * This function is responsible for handling the break question intent.
+     *
+     * @param {agent} agent 
+     */
     function breakFromQuestion(agent){
         var name = agent.getContext('expecting-break-question-confirmation').parameters.name
         var problemnumber = agent.getContext('expecting-break-question-confirmation').parameters.problemnumber
@@ -1147,7 +1315,15 @@ const dialogflowFulfillment = (request,response) => {
         var mistakeC = agent.getContext('expecting-break-question-confirmation').parameters.mistakeC
 
         if(agent.query.toLowerCase() == "yes"){
-            agent.add("Okay lets take a break. Please type done when you are ready to proceed with the next problem.")
+            agent.add("Okay lets take a break. Please type done when you are ready to proceed with the next question.")
+            agent.setContext({
+                "name": 'expecting-ready-question',
+                "lifespan": 1,
+                "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC}
+            })
+        }
+        else if (agent.query.toLowerCase() == "no"){
+            agent.add("Are you ready to proceed to the next question?")
             agent.setContext({
                 "name": 'expecting-ready-question',
                 "lifespan": 1,
@@ -1176,6 +1352,12 @@ const dialogflowFulfillment = (request,response) => {
     
     agent.handleRequest(intentMap)
 
+    /**
+     * This function will classify the input of the user into 3 categories (object, number, character)
+     *
+     * @param {string} input 
+     * @returns {string} classification
+     */
     async function getInputClassification(input){
         var { NlpManager } = require('node-nlp');       
         const manager = new NlpManager({ languages: ['en'], nlu: { useNoneFeature: false }});
@@ -1211,6 +1393,13 @@ const dialogflowFulfillment = (request,response) => {
         return response.answer;
     }
 
+    /**
+     * This function will check whether the users input is correct or not.
+     *
+     * @param {string array} answerarray 
+     * @param {string} input
+     * @returns {string} verdict
+     */
     async function processAnswer(answerarray,input){
         var { NlpManager } = require('node-nlp');       
         const manager = new NlpManager({ languages: ['en'], nlu: { useNoneFeature: false }});
