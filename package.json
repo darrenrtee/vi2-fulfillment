@@ -16,7 +16,10 @@
     "express": "^4.17.1",
     "firebase-functions": "^3.14.0",
     "mongoose": "^5.12.9",
+    "natural": "^5.1.10",
     "node-nlp": "^4.22.1",
+    "similarity": "^1.2.1",
+    "string-similarity": "^4.0.4",
     "wink-pos-tagger": "^2.2.2"
   }
 }

@@ -6,6 +6,9 @@ const PROBLEMTEMPLATE = require('./problemtemplate')
 const QUESTIONTEMPLATES = require('./questiontemplate')
 const RESPONSETEMPLATES = require('./responsetemplate')
 const COMMONSENSEONTOLOGY = require('./commonsenseontology')
+const CHARACTER = require('./character')
+const OBJECTSET = require('./objectset')
+
 const curr_question = 0;
 var posTagger = require( 'wink-pos-tagger' );
 const { baseModelName, modelName } = require('./problemtemplate')
@@ -33,149 +36,27 @@ app.listen(port, () => {
 const dialogflowFulfillment = (request,response) => {
     const agent = new WebhookClient({request,response})
     
-    /**
-     * This function will retrieve the action variable of the word problem from the problem template DB given the problem number.
-     * 
-     * @param {number} number 
-     */
-    function getAction(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.action);
+    function getCharacters(){
+        return CHARACTER.find({type : "character"}).exec()
+            .then( doc => {
+            return Promise.resolve(doc);
         })
     }
 
-    /**
-     * This function will retrieve the object variable of the word problem from the problem template DB given the problem number.
-     * 
-     * @param {number} number 
-     */
-    function getObject(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.object);
+    function getProblemTemplate(problemnumber){
+        return PROBLEMTEMPLATE.findOne({number : problemnumber}).exec()
+            .then( doc => {
+            return Promise.resolve(doc);
         })
     }
 
-    /**
-     * This function will retrieve the object1 variable of the word problem from the problem template DB given the problem number.
-     * 
-     * @param {number} number 
-     */
-    function getObject1(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.object1);
+    function getObjectSets(problemtype){
+        return OBJECTSET.find({settype : problemtype}).exec()
+            .then( doc => {
+            return Promise.resolve(doc);
         })
     }
 
-     /**
-     * This function will retrieve the object2 variable of the word problem from the problem template DB given the problem number.
-     * 
-     * @param {number} number 
-     */
-    function getObject2(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.object2);
-        })
-    }
-
-     /**
-     * This function will retrieve the character1 variable of the word problem from the problem template DB given the problem number.
-     * 
-     * @param {number} number 
-     */
-    function getCharacter1(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.character1);
-        })
-    }
-
-    /**
-     * This function will retrieve the character2 variable of the word problem from the problem template DB given the problem number.
-     * 
-     * @param {number} number 
-     */
-    function getCharacter2(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.character2);
-        })
-    }
-
-    /**
-     * This function will retrieve the pasttense variable of the word problem from the problem template DB given the problem number.
-     * 
-     * @param {number} number 
-     */
-    function getPastTense(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.pasttense);
-        })
-    }
-
-    /**
-     * This function will retrieve the objective variable of the word problem from the problem template DB given the problem number.
-     * 
-     * @param {number} number 
-     */
-    function getObjective(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.objective);
-        })
-    }
-
-      /**
-     * This function will retrieve the operation variable of the word problem from the problem template DB given the problem number.
-     * 
-     * @param {number} number 
-     */
-    function getOperation(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.operation);
-        })
-    }
-      /**
-     * This function will retrieve the problem template of the word problem from the problem template DB given the problem number.
-     * 
-     * @param {number} number 
-     */
-
-    function getProblem(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.problem);
-        })
-    }
-
-    /**
-     * This function will retrieve the problem type of the word problem from the problem template DB given the problem number.
-     * 
-     * @param {number} number 
-     */
-    function getProblemType(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.problemtype);
-        })
-    }
-
-    /**
-     * This function will retrieve the summary of the word problem from the problem template DB given the problem number.
-     * 
-     * @param {number} number 
-     */
-    function getProblemSummary(number){
-        return PROBLEMTEMPLATE.findOne({number : number}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.summary);
-        })
-    }
     /**
      * This function will retrieve the question template from the question templates DB given the questionType.
      * 
@@ -312,99 +193,86 @@ const dialogflowFulfillment = (request,response) => {
         var num1 = Math.floor(Math.random() * 9) + 1
         var num2 = Math.floor(Math.random() * 9) + 1
     
-        return getAction(problemnumber)
-        .then( action => {
-            return getCharacter1(problemnumber)
-            .then( character1 => {
-                return getCharacter2(problemnumber)
-                .then( character2 => {
-                    return getObject(problemnumber)
-                    .then( object => {
-                        return getObject1(problemnumber)
-                        .then( object1 => {
-                            return getObject2(problemnumber)
-                            .then( object2 => {
-                                return getPastTense(problemnumber)
-                                .then( pasttense => {
-                                    return getObjective(problemnumber)
-                                    .then( objective => {
-                                        return getOperation(problemnumber)
-                                        .then( operation => {
-                                            return getProblem(problemnumber)
-                                            .then( problem => {
-                                                return getProblemType(problemnumber)
-                                                .then( problemtype => {
-                                                    if(operation == "subtraction"){
-                                                        if(num1 - num2 < 0){
-                                                            num1 = 8
-                                                            num2 = 4 
-                                                        }
-                                                        else if(num1 - num2 == 0){
-                                                            num1 = 8
-                                                            num2 = 4 
-                                                        }
-                                                    }
-                                                    else if(operation == "division"){
-                                                        if(num2 == 0|| num1 % num2 != 0){
-                                                            num1 = 6
-                                                            num2 = 2
-                                                        }    
-                                                    }
-                                                    else if(operation == "multiplication"){
-                                                        if(num1 == 0)
-                                                            num1 = 1
-                                                        if(num2 == 0)
-                                                            num1 = 1
-                                                        if(num2 > 5)
-                                                            num2 = 3
-                                                    }
+        
 
-                                                    var temp = problem
-                                                    temp = temp.replace("_n1_",num1)
-                                                    temp = temp.replace("_n2_",num2)
-                                                    agent.add("Problem number " + problemnumber + " will be displayed on the screen. Please type DONE once you are done reading the problem.")
-                                                    agent.setContext({
-                                                        "name": 'expecting-ready-question',
-                                                        "lifespan": 1,
-                                                        "parameters":{"problem":temp,"name": name,"problemnumber": problemnumber,"currentquestion":1,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"mistakeU":0,"mistakeF":0,"mistakeC":0}
-                                                    });
-                                                })
-                                                .catch( error => {
-                                                agent.add(error.toString()); 
-                                                });
-                                            })
-                                            .catch( error => {
-                                                agent.add(error.toString()); 
-                                            });
-                                        })
-                                        .catch( error => {
-                                            agent.add(error.toString()); 
-                                        });
-                                    })
-                                    .catch( error => {
-                                        agent.add(error.toString()); 
-                                    });
-                                })
-                                .catch( error => {
-                                    agent.add(error.toString()); 
-                                });
-                            })
-                            .catch( error => {
-                                agent.add(error.toString()); 
-                            });
-                        })
-                        .catch( error => {
-                            agent.add(error.toString()); 
-                        });
-                    })
-                    .catch( error => {
-                        agent.add(error.toString()); 
+        return getProblemTemplate(problemnumber)
+        .then( problemTemplate => {
+            return getObjectSets(problemTemplate.problemtype)
+            .then( objectSets => {
+                return getCharacters()
+                .then( characters => {
+                    
+                    var character1index = Math.floor(Math.random() * characters.length)
+                    var character2index = Math.floor(Math.random() * characters.length)
+                    var objectSetindex = Math.floor(Math.random() * objectSets.length)
+                    var operation = problemTemplate.operation
+                    var numberofcharacter = problemTemplate.numberofcharacters
+
+                    var objectset = objectSets[objectSetindex].object
+                    var character1 = characters[character1index].name
+                    var character2 = ""
+                    var action = objectset[0]
+                    var pasttense = objectset[1]
+                    var object = objectset[2]
+                    var object1 = objectset[3]
+                    var object2 = objectset[4]
+                    var objectplural = objectset[5]
+                    var objective = objectset[6]
+                    var template = problemTemplate.problem
+                    
+                    while(character2index == character1index){
+                        character2index = Math.floor(Math.random() * characters.length)
+                    }
+                    
+                    character2 = characters[character2index].name
+    
+                    if(operation == "subtraction"){
+                        if(num1 - num2 < 0){
+                            num1 = 8
+                            num2 = 4 
+                        }
+                        else if(num1 - num2 == 0){
+                            num1 = 8
+                            num2 = 4 
+                        }
+                    }
+                    else if(operation == "division"){
+                        if(num2 == 0|| num1 % num2 != 0){
+                            num1 = 6
+                            num2 = 2
+                        }    
+                    }
+                    else if(operation == "multiplication"){
+                        if(num1 == 0)
+                            num1 = 1
+                        if(num2 == 0)
+                            num1 = 1
+                        if(num2 > 5)
+                            num2 = 3
+                    }
+                    
+                    template = template.replace(/_n1_/g,num1)
+                    template = template.replace(/_n2_/g,num2)
+                    template = template.replace(/_action_/g,action)
+                    template = template.replace(/_pasttense_/g,pasttense)
+                    template = template.replace(/_object_/g,object)
+                    template = template.replace(/_object1_/g,object1)
+                    template = template.replace(/_object2_/g,object2)
+                    template = template.replace(/_objectplural_/g,objectplural)
+                    template = template.replace(/_character1_/g,character1)
+                    template = template.replace(/_character2_/g,character2)
+
+                    //agent.add("Problem number " + problemnumber + " will be displayed on the screen. Please type DONE once you are done reading the problem.")
+                    agent.add(template)
+                    agent.setContext({
+                        "name": 'expecting-ready-question',
+                        "lifespan": 1,
+                        "parameters":{"problem":template,"name": name,"problemnumber": problemnumber,"currentquestion":1,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemTemplate.problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"numberofcharacter":numberofcharacter,"mistakeU":0,"mistakeF":0,"mistakeC":0}
                     });
                 })
                 .catch( error => {
-                agent.add(error.toString()); 
+                    agent.add(error.toString()); 
                 });
-                
             })
             .catch( error => {
                 agent.add(error.toString()); 
@@ -413,6 +281,7 @@ const dialogflowFulfillment = (request,response) => {
         .catch( error => {
             agent.add(error.toString()); 
         });
+
     }
     
     /**
@@ -441,12 +310,13 @@ const dialogflowFulfillment = (request,response) => {
         var mistakeU = agent.getContext('expecting-ready-question').parameters.mistakeU
         var mistakeF = agent.getContext('expecting-ready-question').parameters.mistakeF
         var mistakeC = agent.getContext('expecting-ready-question').parameters.mistakeC
-
+        var numberofcharacter = agent.getContext('expecting-ready-question').parameters.numberofcharacter
+        
         var questiontype = ""
 
-        if(character2 == "N/A")
+        if(numberofcharacter == "1")
             questiontype = problemtype + "question" + currentquestion + "char1"
-        else   
+        else if (numberofcharacter == "2")
             questiontype = problemtype + "question" + currentquestion + "char2"
 
         console.log(questiontype)
@@ -471,7 +341,7 @@ const dialogflowFulfillment = (request,response) => {
                     agent.setContext({
                         "name": 'expecting-question-answer',
                         "lifespan": 1,
-                        "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0}
+                        "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
                     });
                     })
                 .catch( error => {
@@ -519,6 +389,7 @@ const dialogflowFulfillment = (request,response) => {
         var mistakeF = agent.getContext('expecting-question-answer').parameters.mistakeF
         var mistakeC = agent.getContext('expecting-question-answer').parameters.mistakeC
         var tries = agent.getContext('expecting-question-answer').parameters.tries
+        var numberofcharacter = agent.getContext('expecting-question-answer').parameters.numberofcharacter
         
         var tempanswerarray = answer
         var verdict
@@ -569,9 +440,14 @@ const dialogflowFulfillment = (request,response) => {
                 
             }
             verdict= await processAnswer(tempanswerarray,agent.query)
-    
+            var similarityindex = stringSimilarity(tempanswerarray,agent.query)
+            
             if(verdict == null)
                 verdict = "WRONG"
+            else if(verdict == "CORRECT"){
+                if(similarityindex < 0.5)
+                    verdict = "WRONG"
+            }
         }
             
        
@@ -608,7 +484,7 @@ const dialogflowFulfillment = (request,response) => {
                 agent.setContext({
                     "name": 'expecting-requestion',
                     "lifespan": 1,
-                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":tempinputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries}
+                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":tempinputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries,"numberofcharacter":numberofcharacter}
                 })
             }   
             else{
@@ -622,7 +498,7 @@ const dialogflowFulfillment = (request,response) => {
                     agent.setContext({
                         "name": 'expecting-requestion',
                         "lifespan": 1,
-                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":tempinputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries}
+                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":tempinputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries,"numberofcharacter":numberofcharacter}
                     })
                 })
                 .catch( error => {
@@ -682,7 +558,7 @@ const dialogflowFulfillment = (request,response) => {
                                 agent.setContext({
                                     "name": 'expecting-ready-question',
                                     "lifespan": 1,
-                                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion + 1,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries}
+                                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion + 1,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries,"numberofcharacter":numberofcharacter}
                                 });
                             })
                             .catch( error => {
@@ -731,7 +607,7 @@ const dialogflowFulfillment = (request,response) => {
                     agent.setContext({
                         "name": 'expecting-summary-of-problem',
                         "lifespan": 1,
-                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"summary":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries}
+                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"summary":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries,"numberofcharacter":numberofcharacter}
                     });
                 })
                 .catch( error => {
@@ -778,7 +654,7 @@ const dialogflowFulfillment = (request,response) => {
                                 agent.setContext({
                                     "name": 'expecting-requestion',
                                     "lifespan": 1,
-                                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries + 1}
+                                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries + 1,"numberofcharacter":numberofcharacter}
                                 })
                             })
                             .catch( error => {
@@ -794,7 +670,7 @@ const dialogflowFulfillment = (request,response) => {
                                 agent.setContext({
                                     "name": 'expecting-requestion',
                                     "lifespan": 1,
-                                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries + 1}
+                                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries + 1,"numberofcharacter":numberofcharacter}
                                 })
                             })
                             .catch( error => {
@@ -839,7 +715,7 @@ const dialogflowFulfillment = (request,response) => {
                                     agent.setContext({
                                         "name": 'expecting-requestion',
                                         "lifespan": 1,
-                                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries + 1}
+                                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries + 1,"numberofcharacter":numberofcharacter}
                                     })
                             })
                             .catch( error => {
@@ -910,7 +786,7 @@ const dialogflowFulfillment = (request,response) => {
                                         agent.setContext({
                                             "name": 'expecting-ready-question',
                                             "lifespan": 1,
-                                            "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion + 1,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries + 1}
+                                            "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion + 1,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries + 1,"numberofcharacter":numberofcharacter}
                                         });
                                     }
                                     else{
@@ -923,7 +799,7 @@ const dialogflowFulfillment = (request,response) => {
                                         agent.setContext({
                                             "name": 'expecting-summary-of-problem',
                                             "lifespan": 1,
-                                            "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"summary":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries + 1}
+                                            "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"summary":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries + 1,"numberofcharacter":numberofcharacter}
                                         });
                                     }
                                 })
@@ -980,6 +856,8 @@ const dialogflowFulfillment = (request,response) => {
         var mistakeU = agent.getContext('expecting-summary-of-problem').parameters.mistakeU
         var mistakeF = agent.getContext('expecting-summary-of-problem').parameters.mistakeF
         var mistakeC = agent.getContext('expecting-summary-of-problem').parameters.mistakeC
+        var numberofcharacter = agent.getContext('expecting-summary-of-problem').parameters.numberofcharacter
+        
         var ans
         
         if(operation == "addition")
@@ -1011,7 +889,7 @@ const dialogflowFulfillment = (request,response) => {
                     agent.setContext({
                         "name": 'expecting-ready-problem-confirmation',
                         "lifespan": 1,
-                        "parameters":{"name": name,"problemnumber": problemnumber+1,"problemsummary":summary,"endlesson":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC}
+                        "parameters":{"name": name,"problemnumber": problemnumber+1,"problemsummary":summary,"endlesson":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"numberofcharacter":numberofcharacter}
                     })
                 })
                 .catch( error => {
@@ -1100,6 +978,7 @@ const dialogflowFulfillment = (request,response) => {
         var mistakeU = agent.getContext('expecting-requestion').parameters.mistakeU
         var mistakeF = agent.getContext('expecting-requestion').parameters.mistakeF
         var mistakeC = agent.getContext('expecting-requestion').parameters.mistakeC
+        var numberofcharacter = agent.getContext('expecting-requestion').parameters.numberofcharacter
         var tries = agent.getContext('expecting-requestion').parameters.tries
 
         console.log(tries)
@@ -1134,7 +1013,7 @@ const dialogflowFulfillment = (request,response) => {
                 agent.setContext({
                     "name": 'expecting-question-answer',
                     "lifespan": 1,
-                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries" :tries}
+                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries" :tries,"numberofcharacter":numberofcharacter}
                 })
             })
             .catch( error => {
@@ -1280,12 +1159,13 @@ const dialogflowFulfillment = (request,response) => {
         var mistakeU = agent.getContext('expecting-ready-question').parameters.mistakeU
         var mistakeF = agent.getContext('expecting-ready-question').parameters.mistakeF
         var mistakeC = agent.getContext('expecting-ready-question').parameters.mistakeC
+        var numberofcharacter = agent.getContext('expecting-ready-question').parameters.numberofcharacter
         
         agent.add("Sure thing. Do you want to take a break ?")
         agent.setContext({
             "name": 'expecting-break-question-confirmation',
             "lifespan": 1,
-            "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC}
+            "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"numberofcharacter":numberofcharacter}
         })
     }
 
@@ -1313,13 +1193,14 @@ const dialogflowFulfillment = (request,response) => {
         var mistakeU = agent.getContext('expecting-break-question-confirmation').parameters.mistakeU
         var mistakeF = agent.getContext('expecting-break-question-confirmation').parameters.mistakeF
         var mistakeC = agent.getContext('expecting-break-question-confirmation').parameters.mistakeC
+        var numberofcharacter = agent.getContext('expecting-break-question-confirmation').parameters.numberofcharacter
 
         if(agent.query.toLowerCase() == "yes"){
             agent.add("Okay lets take a break. Please type done when you are ready to proceed with the next question.")
             agent.setContext({
                 "name": 'expecting-ready-question',
                 "lifespan": 1,
-                "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC}
+                "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"numberofcharacter":numberofcharacter}
             })
         }
         else if (agent.query.toLowerCase() == "no"){
@@ -1327,7 +1208,7 @@ const dialogflowFulfillment = (request,response) => {
             agent.setContext({
                 "name": 'expecting-ready-question',
                 "lifespan": 1,
-                "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC}
+                "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"numberofcharacter":numberofcharacter}
             })
         }
     }
@@ -1405,15 +1286,29 @@ const dialogflowFulfillment = (request,response) => {
         const manager = new NlpManager({ languages: ['en'], nlu: { useNoneFeature: false }});
        
         for(var i = 0; i < answerarray.length; i++){
-            manager.addDocument('en', answerarray[i], 'CORRECT');
+            manager.addDocument('en', answerarray[i].toLowerCase(), 'CORRECT');
         }
         
         manager.addAnswer('en', 'CORRECT', 'CORRECT');
         
         await manager.train();
         manager.save();
-        var response = await manager.process('en', input);
+        var response = await manager.process('en', input.toLowerCase());
         return response.answer;
+    }
+
+    function stringSimilarity(answerarray,input){
+        var similarity = require('similarity')
+        var similarityindex = 0
+
+        for(var i = 0; i < answerarray.length; i++){
+            var temp
+            temp = similarity(answerarray[i], input);
+            if(temp > similarityindex)
+                similarityindex = temp
+        }
+
+        return similarityindex
     }
 
 }

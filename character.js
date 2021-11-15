@@ -1,35 +1,28 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const problemTemplateSchema = new Schema({
+const characterSchema = new Schema({
     _id:{
         type: String,
         required: true
     },
-    problem:{
+    name:{
         type: String,
         required: true  
     },
-    number:{
+    pronoun:{
         type: String,
         required: true
     },
-    summary:{
+    possessivepronoun:{
         type: String,
         required: true
     },
-    operation:{
-        type: String,
-        required: true
-    },
-    problemtype:{
-        type: String,
-        required: true
-    },
-    numberofcharacters:{
+    type:{
         type: String,
         required: true
     }
+    
 })
 
-module.exports = mongoose.model('problemtemplates',problemTemplateSchema)
+module.exports = mongoose.model('characters',characterSchema)
