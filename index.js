@@ -57,15 +57,37 @@ const dialogflowFulfillment = (request,response) => {
         })
     }
 
+    function getHint(problemtype,numberofcharacter,currentquestion){
+        return RESPONSETEMPLATES.findOne({type: "hint",problemtype:problemtype, numberofcharacters:numberofcharacter+"", questionno:currentquestion+""}).exec()
+          .then( doc => {
+            return Promise.resolve(doc);
+        })
+    }
+
+    function getProblemSummary(problemnumber){
+        console.log("Num : " + problemnumber)
+        return PROBLEMTEMPLATE.findOne({number : problemnumber}).exec()
+            .then( doc => {
+            return Promise.resolve(doc);
+        })
+    }
+
     /**
      * This function will retrieve the question template from the question templates DB given the questionType.
      * 
      * @param {string} questionType 
      */
-    function getQuestionTemplate(questionType){
-        return QUESTIONTEMPLATES.findOne({type: questionType}).exec()
+    function getQuestionTemplate(problemtype,numberofcharacter,currentquestion){
+        return QUESTIONTEMPLATES.findOne({problemtype:problemtype,numberofcharacters:numberofcharacter+"",questionno:currentquestion+""}).exec()
           .then( doc => {
-            return Promise.resolve(doc.question);
+            return Promise.resolve(doc);
+        })
+    }
+
+    function getQuestionGeneric(questiontype){
+        return QUESTIONTEMPLATES.findOne({questiontype:questiontype}).exec()
+          .then( doc => {
+            return Promise.resolve(doc);
         })
     }
 
@@ -110,11 +132,37 @@ const dialogflowFulfillment = (request,response) => {
      * 
      * @param {string} questionType 
      */
-    function getRestatement(questionType){
-        return QUESTIONTEMPLATES.findOne({type: questionType}).exec()
-          .then( doc => {
-            return Promise.resolve(doc.restatement);
-        })
+    function getRestatement(problemtype,numberofcharacter,currentquestion){
+        if(currentquestion == "9"){
+            return QUESTIONTEMPLATES.findOne({questiontype:"operation"}).exec()
+            .then( doc => {
+                return Promise.resolve(doc.restatement);
+            })
+        }
+        else if(currentquestion == "10"){
+            return QUESTIONTEMPLATES.findOne({questiontype:"firstnumber"}).exec()
+            .then( doc => {
+                return Promise.resolve(doc.restatement);
+            })
+        }       
+        else if(currentquestion == "11"){
+            return QUESTIONTEMPLATES.findOne({questiontype:"secondnumber"}).exec()
+            .then( doc => {
+                return Promise.resolve(doc.restatement);
+            })
+        }
+        else if(currentquestion == "12"){
+            return QUESTIONTEMPLATES.findOne({questiontype:"finalanswer"}).exec()
+            .then( doc => {
+                return Promise.resolve(doc.restatement);
+            })
+        }
+        else{
+            return QUESTIONTEMPLATES.findOne({problemtype:problemtype,numberofcharacters:numberofcharacter+"",questionno:currentquestion+""}).exec()
+            .then( doc => {
+                return Promise.resolve(doc.restatement);
+            })
+        }
     }
 
     /**
@@ -210,6 +258,7 @@ const dialogflowFulfillment = (request,response) => {
 
                     var objectset = objectSets[objectSetindex].object
                     var character1 = characters[character1index].name
+                    var pronoun = characters[character1index].pronoun
                     var character2 = ""
                     var action = objectset[0]
                     var pasttense = objectset[1]
@@ -218,6 +267,10 @@ const dialogflowFulfillment = (request,response) => {
                     var object2 = objectset[4]
                     var objectplural = objectset[5]
                     var objective = objectset[6]
+                    var action2 = objectset[7]
+                    var action2passtense = objectset[8]
+                    var object1label = objectset[9]
+                    var object2label = objectset[10]
                     var template = problemTemplate.problem
                     
                     while(character2index == character1index){
@@ -254,6 +307,8 @@ const dialogflowFulfillment = (request,response) => {
                     template = template.replace(/_n1_/g,num1)
                     template = template.replace(/_n2_/g,num2)
                     template = template.replace(/_action_/g,action)
+                    template = template.replace(/_action2_/g,action2)
+                    template = template.replace(/_action2pasttense_/g,action2passtense)
                     template = template.replace(/_pasttense_/g,pasttense)
                     template = template.replace(/_object_/g,object)
                     template = template.replace(/_object1_/g,object1)
@@ -261,13 +316,22 @@ const dialogflowFulfillment = (request,response) => {
                     template = template.replace(/_objectplural_/g,objectplural)
                     template = template.replace(/_character1_/g,character1)
                     template = template.replace(/_character2_/g,character2)
+                    template = template.replace(/_pronoun_/g,pronoun)
+                    
+                    object1label = object1label.replace(/_character1_/g,character1)
+                    object1label = object1label.replace(/_character2_/g,character2)
+                    object2label = object2label.replace(/_character1_/g,character1)
+                    object2label = object2label.replace(/_character2_/g,character2)
+                    
 
+                    objective = objective.replace(/_character1_/g,character1)
+                    objective = objective.replace(/_character2_/g,character2)
                     //agent.add("Problem number " + problemnumber + " will be displayed on the screen. Please type DONE once you are done reading the problem.")
                     agent.add(template)
                     agent.setContext({
                         "name": 'expecting-ready-question',
                         "lifespan": 1,
-                        "parameters":{"problem":template,"name": name,"problemnumber": problemnumber,"currentquestion":1,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemTemplate.problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"numberofcharacter":numberofcharacter,"mistakeU":0,"mistakeF":0,"mistakeC":0}
+                        "parameters":{"problem":template,"name": name,"problemnumber": problemnumber,"currentquestion":1,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemTemplate.problemtype,"object1":object1,"object2":object2,"object1label":object1label,"object2label":object2label,"objectplural":objectplural,"pasttense":pasttense,"objective":objective,"operation":operation,"numberofcharacter":numberofcharacter,"mistakeU":0,"mistakeF":0,"mistakeC":0}
                     });
                 })
                 .catch( error => {
@@ -311,51 +375,150 @@ const dialogflowFulfillment = (request,response) => {
         var mistakeF = agent.getContext('expecting-ready-question').parameters.mistakeF
         var mistakeC = agent.getContext('expecting-ready-question').parameters.mistakeC
         var numberofcharacter = agent.getContext('expecting-ready-question').parameters.numberofcharacter
+        var objectplural = agent.getContext('expecting-ready-question').parameters.objectplural
         
         var questiontype = ""
-
+        
         if(numberofcharacter == "1")
             questiontype = problemtype + "question" + currentquestion + "char1"
         else if (numberofcharacter == "2")
             questiontype = problemtype + "question" + currentquestion + "char2"
-
-        console.log(questiontype)
-
-        return getQuestionTemplate(questiontype)
-        .then(questionTemplate => {
-            return getAnswer(questiontype)
-            .then(answer => {
-                return getInput(questiontype)
-                .then(input => {
-                    var temp = questionTemplate
-                    
-                    temp = temp.replace(/_action_/g,action)
-                    temp = temp.replace(/_character1_/g,character1)
-                    temp = temp.replace(/_character2_/g,character2)
-                    temp = temp.replace(/_object_/g,object)
-                    temp = temp.replace(/_object1_/g,object1)
-                    temp = temp.replace(/_object2_/g,object2)
-                    temp = temp.replace(/_pasttense_/g,pasttense)
-
-                    agent.add(temp)
-                    agent.setContext({
-                        "name": 'expecting-question-answer',
-                        "lifespan": 1,
-                        "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
-                    });
-                    })
-                .catch( error => {
-                agent.add(error.toString()); 
-                });
+        
+        if(currentquestion == "9"){
+            return getQuestionGeneric("operation")
+            .then(questionTemplate => {
+                console.log(questionTemplate.question)
+                var answer = questionTemplate.answer
+                var temp = questionTemplate.question
+                var input = questionTemplate.uielement
                 
+                temp = temp.replace(/_action_/g,action)
+                temp = temp.replace(/_character1_/g,character1)
+                temp = temp.replace(/_character2_/g,character2)
+                temp = temp.replace(/_object_/g,object)
+                temp = temp.replace(/_object1_/g,object1)
+                temp = temp.replace(/_object2_/g,object2)
+                temp = temp.replace(/_pasttense_/g,pasttense)
+    
+                agent.add(temp)
+                agent.setContext({
+                    "name": 'expecting-question-answer',
+                    "lifespan": 1,
+                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
+                });
             })
             .catch( error => {
-            agent.add(error.toString()); 
+                agent.add(error.toString()+"3"); 
             });
-        })
-        .catch( error => {
-          agent.add(error.toString()); 
-        });
+        }
+        else if(currentquestion == "10"){
+            return getQuestionGeneric("firstnumber")
+            .then(questionTemplate => {
+                console.log(questionTemplate.question)
+                var answer = questionTemplate.answer
+                var temp = questionTemplate.question
+                var input = questionTemplate.uielement
+                
+                temp = temp.replace(/_action_/g,action)
+                temp = temp.replace(/_character1_/g,character1)
+                temp = temp.replace(/_character2_/g,character2)
+                temp = temp.replace(/_object_/g,object)
+                temp = temp.replace(/_object1_/g,object1)
+                temp = temp.replace(/_object2_/g,object2)
+                temp = temp.replace(/_pasttense_/g,pasttense)
+    
+                agent.add(temp)
+                agent.setContext({
+                    "name": 'expecting-question-answer',
+                    "lifespan": 1,
+                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
+                });
+            })
+            .catch( error => {
+              agent.add(error.toString()+"3"); 
+            });
+        }
+        else if(currentquestion == "11"){
+            return getQuestionGeneric("secondnumber")
+            .then(questionTemplate => {
+                console.log(questionTemplate.question)
+                var answer = questionTemplate.answer
+                var temp = questionTemplate.question
+                var input = questionTemplate.uielement
+                
+                temp = temp.replace(/_action_/g,action)
+                temp = temp.replace(/_character1_/g,character1)
+                temp = temp.replace(/_character2_/g,character2)
+                temp = temp.replace(/_object_/g,object)
+                temp = temp.replace(/_object1_/g,object1)
+                temp = temp.replace(/_object2_/g,object2)
+                temp = temp.replace(/_pasttense_/g,pasttense)
+    
+                agent.add(temp)
+                agent.setContext({
+                    "name": 'expecting-question-answer',
+                    "lifespan": 1,
+                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
+                });
+            })
+            .catch( error => {
+              agent.add(error.toString()+"3"); 
+            });
+        }
+        else if(currentquestion == "12"){
+            return getQuestionGeneric("finalanswer")
+            .then(questionTemplate => {
+                console.log(questionTemplate.question)
+                var answer = questionTemplate.answer
+                var temp = questionTemplate.question
+                var input = questionTemplate.uielement
+                
+                temp = temp.replace(/_action_/g,action)
+                temp = temp.replace(/_character1_/g,character1)
+                temp = temp.replace(/_character2_/g,character2)
+                temp = temp.replace(/_object_/g,object)
+                temp = temp.replace(/_object1_/g,object1)
+                temp = temp.replace(/_object2_/g,object2)
+                temp = temp.replace(/_pasttense_/g,pasttense)
+    
+                agent.add(temp)
+                agent.setContext({
+                    "name": 'expecting-question-answer',
+                    "lifespan": 1,
+                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
+                });
+            })
+            .catch( error => {
+              agent.add(error.toString()+"3"); 
+            });
+        }
+        else{
+            return getQuestionTemplate(problemtype,numberofcharacter,currentquestion)
+            .then(questionTemplate => {
+                console.log(questionTemplate.question)
+                var answer = questionTemplate.answer
+                var temp = questionTemplate.question
+                var input = questionTemplate.uielement
+                
+                temp = temp.replace(/_action_/g,action)
+                temp = temp.replace(/_character1_/g,character1)
+                temp = temp.replace(/_character2_/g,character2)
+                temp = temp.replace(/_object_/g,object)
+                temp = temp.replace(/_object1_/g,object1)
+                temp = temp.replace(/_object2_/g,object2)
+                temp = temp.replace(/_pasttense_/g,pasttense)
+    
+                agent.add(temp)
+                agent.setContext({
+                    "name": 'expecting-question-answer',
+                    "lifespan": 1,
+                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
+                });
+            })
+            .catch( error => {
+              agent.add(error.toString()+"3"); 
+            });
+        }
     }
 
     /**
@@ -510,7 +673,7 @@ const dialogflowFulfillment = (request,response) => {
             
             if(currentquestion + 1 <= 12){
                 
-                return getRestatement(questiontype)
+                return getRestatement(problemtype,numberofcharacter,currentquestion)
                     .then( restatement => {
                         return getResponses("positiveresponse")
                         .then( positiveResponses => {
@@ -574,9 +737,10 @@ const dialogflowFulfillment = (request,response) => {
                 });
             } 
             else{
-                return getRestatement(questiontype)
+                return getRestatement(problemtype,numberofcharacter,currentquestion)
                 .then( restatement => {
                     var restatementResponse = restatement
+
                     restatementResponse = restatementResponse.replace(/_action_/g,action)
                     restatementResponse = restatementResponse.replace(/_character1_/g,character1)
                     restatementResponse = restatementResponse.replace(/_character2_/g,character2)
@@ -678,11 +842,10 @@ const dialogflowFulfillment = (request,response) => {
                             });
                         }
                         else if(inputclassification == "other"){
-                            return getResponses(questiontype+"hint")
+                            return getHint(problemtype,numberofcharacter,currentquestion)
                             .then( hints => {
                                 
-                                    var hintindex = Math.floor(Math.random() * hints.length)
-                                    var hint = hints[hintindex].response
+                                    var hint = hints.response
 
                                     hint = hint.replace(/_action_/g,action)
                                     hint = hint.replace(/_character1_/g,character1)
@@ -719,7 +882,7 @@ const dialogflowFulfillment = (request,response) => {
                                     })
                             })
                             .catch( error => {
-                                agent.add(error.toString()); // Error: Unknown response type: "undefined"
+                                agent.add(error.toString()+"sa hint"); // Error: Unknown response type: "undefined"
                             });
                         }
                     }
@@ -738,7 +901,7 @@ const dialogflowFulfillment = (request,response) => {
                             console.log("MistakeF : " + mistakeF)
                         }
 
-                        return getRestatement(questiontype)
+                        return getRestatement(problemtype,numberofcharacter,currentquestion)
                         .then( restatement => {
                             return getResponses("nextquestionprompt")
                             .then( nextQuestionPrompts => {
@@ -899,8 +1062,8 @@ const dialogflowFulfillment = (request,response) => {
         else{
             return getProblemSummary(problemnumber)
             .then( summaryTemplate => {
-                    var summary = summaryTemplate
-                   
+                    var summary = summaryTemplate.summary
+                    console.log(summary)
                     summary = summary.replace(/_action_/g,action)
                     summary = summary.replace(/_character1_/g,character1)
                     summary = summary.replace(/_character2_/g,character2)
@@ -982,47 +1145,217 @@ const dialogflowFulfillment = (request,response) => {
         var tries = agent.getContext('expecting-requestion').parameters.tries
 
         console.log(tries)
-
-        return getQuestionTemplate(questiontype)
-        .then(questionTemplate => {
-            return getResponses("requestionprompt")
-            .then(requestionPrompts => {
-                var temp = questionTemplate
-                var requestionPromptindex = Math.floor(Math.random() * requestionPrompts.length)
-                var requestionPrompt = requestionPrompts[requestionPromptindex].response
-
-                temp = temp.replace(/_action_/g,action)
-                temp = temp.replace(/_character1_/g,character1)
-                temp = temp.replace(/_character2_/g,character2)
-                temp = temp.replace(/_object_/g,object)
-                temp = temp.replace(/_object1_/g,object1)
-                temp = temp.replace(/_object2_/g,object2)
-                temp = temp.replace(/_pasttense_/g,pasttense)
+        if(currentquestion == "9"){
+            return getQuestionGeneric("operation")
+            .then(questionTemplate => {
+                return getResponses("requestionprompt")
+                .then(requestionPrompts => {
+                    var temp = questionTemplate.question
+                    var requestionPromptindex = Math.floor(Math.random() * requestionPrompts.length)
+                    var requestionPrompt = requestionPrompts[requestionPromptindex].response
+    
+                    temp = temp.replace(/_action_/g,action)
+                    temp = temp.replace(/_character1_/g,character1)
+                    temp = temp.replace(/_character2_/g,character2)
+                    temp = temp.replace(/_object_/g,object)
+                    temp = temp.replace(/_object1_/g,object1)
+                    temp = temp.replace(/_object2_/g,object2)
+                    temp = temp.replace(/_pasttense_/g,pasttense)
+                        
+                    temp = temp.replace(/_action_./g,action)
+                    temp = temp.replace(/_character1_./g,character1)
+                    temp = temp.replace(/_character2_./g,character2)
+                    temp = temp.replace(/_object_./g,object)
+                    temp = temp.replace(/_object1_./g,object1)
+                    temp = temp.replace(/_object2_./g,object2)
+                    temp = temp.replace(/_pasttense_./g,pasttense)
                     
-                temp = temp.replace(/_action_./g,action)
-                temp = temp.replace(/_character1_./g,character1)
-                temp = temp.replace(/_character2_./g,character2)
-                temp = temp.replace(/_object_./g,object)
-                temp = temp.replace(/_object1_./g,object1)
-                temp = temp.replace(/_object2_./g,object2)
-                temp = temp.replace(/_pasttense_./g,pasttense)
-                
-                var finalresponse = requestionPrompt + " " + temp
-
-                agent.add(finalresponse)
-                agent.setContext({
-                    "name": 'expecting-question-answer',
-                    "lifespan": 1,
-                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries" :tries,"numberofcharacter":numberofcharacter}
+                    var finalresponse = requestionPrompt + " " + temp
+    
+                    agent.add(finalresponse)
+                    agent.setContext({
+                        "name": 'expecting-question-answer',
+                        "lifespan": 1,
+                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries" :tries,"numberofcharacter":numberofcharacter}
+                    })
                 })
+                .catch( error => {
+                agent.add(error.toString()); 
+                });
             })
             .catch( error => {
-            agent.add(error.toString()); 
+              agent.add(error.toString()); 
             });
-        })
-        .catch( error => {
-          agent.add(error.toString()); 
-        });
+        }
+        else if(currentquestion == "10"){
+            return getQuestionGeneric("firstnumber")
+            .then(questionTemplate => {
+                return getResponses("requestionprompt")
+                .then(requestionPrompts => {
+                    var temp = questionTemplate.question
+                    var requestionPromptindex = Math.floor(Math.random() * requestionPrompts.length)
+                    var requestionPrompt = requestionPrompts[requestionPromptindex].response
+    
+                    temp = temp.replace(/_action_/g,action)
+                    temp = temp.replace(/_character1_/g,character1)
+                    temp = temp.replace(/_character2_/g,character2)
+                    temp = temp.replace(/_object_/g,object)
+                    temp = temp.replace(/_object1_/g,object1)
+                    temp = temp.replace(/_object2_/g,object2)
+                    temp = temp.replace(/_pasttense_/g,pasttense)
+                        
+                    temp = temp.replace(/_action_./g,action)
+                    temp = temp.replace(/_character1_./g,character1)
+                    temp = temp.replace(/_character2_./g,character2)
+                    temp = temp.replace(/_object_./g,object)
+                    temp = temp.replace(/_object1_./g,object1)
+                    temp = temp.replace(/_object2_./g,object2)
+                    temp = temp.replace(/_pasttense_./g,pasttense)
+                    
+                    var finalresponse = requestionPrompt + " " + temp
+    
+                    agent.add(finalresponse)
+                    agent.setContext({
+                        "name": 'expecting-question-answer',
+                        "lifespan": 1,
+                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries" :tries,"numberofcharacter":numberofcharacter}
+                    })
+                })
+                .catch( error => {
+                agent.add(error.toString()); 
+                });
+            })
+            .catch( error => {
+              agent.add(error.toString()); 
+            });
+        }
+        else if(currentquestion == "11"){
+            return getQuestionGeneric("secondnumber")
+            .then(questionTemplate => {
+                return getResponses("requestionprompt")
+                .then(requestionPrompts => {
+                    var temp = questionTemplate.question
+                    var requestionPromptindex = Math.floor(Math.random() * requestionPrompts.length)
+                    var requestionPrompt = requestionPrompts[requestionPromptindex].response
+    
+                    temp = temp.replace(/_action_/g,action)
+                    temp = temp.replace(/_character1_/g,character1)
+                    temp = temp.replace(/_character2_/g,character2)
+                    temp = temp.replace(/_object_/g,object)
+                    temp = temp.replace(/_object1_/g,object1)
+                    temp = temp.replace(/_object2_/g,object2)
+                    temp = temp.replace(/_pasttense_/g,pasttense)
+                        
+                    temp = temp.replace(/_action_./g,action)
+                    temp = temp.replace(/_character1_./g,character1)
+                    temp = temp.replace(/_character2_./g,character2)
+                    temp = temp.replace(/_object_./g,object)
+                    temp = temp.replace(/_object1_./g,object1)
+                    temp = temp.replace(/_object2_./g,object2)
+                    temp = temp.replace(/_pasttense_./g,pasttense)
+                    
+                    var finalresponse = requestionPrompt + " " + temp
+    
+                    agent.add(finalresponse)
+                    agent.setContext({
+                        "name": 'expecting-question-answer',
+                        "lifespan": 1,
+                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries" :tries,"numberofcharacter":numberofcharacter}
+                    })
+                })
+                .catch( error => {
+                agent.add(error.toString()); 
+                });
+            })
+            .catch( error => {
+              agent.add(error.toString()); 
+            });
+        }
+        else if(currentquestion == "12"){
+            return getQuestionGeneric("finalanswer")
+            .then(questionTemplate => {
+                return getResponses("requestionprompt")
+                .then(requestionPrompts => {
+                    var temp = questionTemplate.question
+                    var requestionPromptindex = Math.floor(Math.random() * requestionPrompts.length)
+                    var requestionPrompt = requestionPrompts[requestionPromptindex].response
+    
+                    temp = temp.replace(/_action_/g,action)
+                    temp = temp.replace(/_character1_/g,character1)
+                    temp = temp.replace(/_character2_/g,character2)
+                    temp = temp.replace(/_object_/g,object)
+                    temp = temp.replace(/_object1_/g,object1)
+                    temp = temp.replace(/_object2_/g,object2)
+                    temp = temp.replace(/_pasttense_/g,pasttense)
+                        
+                    temp = temp.replace(/_action_./g,action)
+                    temp = temp.replace(/_character1_./g,character1)
+                    temp = temp.replace(/_character2_./g,character2)
+                    temp = temp.replace(/_object_./g,object)
+                    temp = temp.replace(/_object1_./g,object1)
+                    temp = temp.replace(/_object2_./g,object2)
+                    temp = temp.replace(/_pasttense_./g,pasttense)
+                    
+                    var finalresponse = requestionPrompt + " " + temp
+    
+                    agent.add(finalresponse)
+                    agent.setContext({
+                        "name": 'expecting-question-answer',
+                        "lifespan": 1,
+                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries" :tries,"numberofcharacter":numberofcharacter}
+                    })
+                })
+                .catch( error => {
+                agent.add(error.toString()); 
+                });
+            })
+            .catch( error => {
+              agent.add(error.toString()); 
+            });
+        }
+        else{
+            return getQuestionTemplate(problemtype,numberofcharacter,currentquestion)
+            .then(questionTemplate => {
+                return getResponses("requestionprompt")
+                .then(requestionPrompts => {
+                    var temp = questionTemplate.question
+                    var requestionPromptindex = Math.floor(Math.random() * requestionPrompts.length)
+                    var requestionPrompt = requestionPrompts[requestionPromptindex].response
+    
+                    temp = temp.replace(/_action_/g,action)
+                    temp = temp.replace(/_character1_/g,character1)
+                    temp = temp.replace(/_character2_/g,character2)
+                    temp = temp.replace(/_object_/g,object)
+                    temp = temp.replace(/_object1_/g,object1)
+                    temp = temp.replace(/_object2_/g,object2)
+                    temp = temp.replace(/_pasttense_/g,pasttense)
+                        
+                    temp = temp.replace(/_action_./g,action)
+                    temp = temp.replace(/_character1_./g,character1)
+                    temp = temp.replace(/_character2_./g,character2)
+                    temp = temp.replace(/_object_./g,object)
+                    temp = temp.replace(/_object1_./g,object1)
+                    temp = temp.replace(/_object2_./g,object2)
+                    temp = temp.replace(/_pasttense_./g,pasttense)
+                    
+                    var finalresponse = requestionPrompt + " " + temp
+    
+                    agent.add(finalresponse)
+                    agent.setContext({
+                        "name": 'expecting-question-answer',
+                        "lifespan": 1,
+                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":inputclassification,"mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries" :tries,"numberofcharacter":numberofcharacter}
+                    })
+                })
+                .catch( error => {
+                agent.add(error.toString()); 
+                });
+            })
+            .catch( error => {
+              agent.add(error.toString()); 
+            });
+        }
+        
     }
 
     /**
