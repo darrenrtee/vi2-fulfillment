@@ -326,8 +326,7 @@ const dialogflowFulfillment = (request,response) => {
 
                     objective = objective.replace(/_character1_/g,character1)
                     objective = objective.replace(/_character2_/g,character2)
-                    //agent.add("Problem number " + problemnumber + " will be displayed on the screen. Please type DONE once you are done reading the problem.")
-                    agent.add(template)
+                    agent.add("Problem number " + problemnumber + " will be displayed on the screen. Please type DONE once you are done reading the problem.")
                     agent.setContext({
                         "name": 'expecting-ready-question',
                         "lifespan": 1,
