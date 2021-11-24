@@ -403,7 +403,7 @@ const dialogflowFulfillment = (request,response) => {
                 agent.setContext({
                     "name": 'expecting-question-answer',
                     "lifespan": 1,
-                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
+                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"objectplural":objectplural,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
                 });
             })
             .catch( error => {
@@ -430,7 +430,7 @@ const dialogflowFulfillment = (request,response) => {
                 agent.setContext({
                     "name": 'expecting-question-answer',
                     "lifespan": 1,
-                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
+                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"objectplural":objectplural,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
                 });
             })
             .catch( error => {
@@ -457,7 +457,7 @@ const dialogflowFulfillment = (request,response) => {
                 agent.setContext({
                     "name": 'expecting-question-answer',
                     "lifespan": 1,
-                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
+                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"objectplural":objectplural,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
                 });
             })
             .catch( error => {
@@ -484,7 +484,7 @@ const dialogflowFulfillment = (request,response) => {
                 agent.setContext({
                     "name": 'expecting-question-answer',
                     "lifespan": 1,
-                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
+                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"objectplural":objectplural,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
                 });
             })
             .catch( error => {
@@ -511,7 +511,7 @@ const dialogflowFulfillment = (request,response) => {
                 agent.setContext({
                     "name": 'expecting-question-answer',
                     "lifespan": 1,
-                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
+                    "parameters":{"name": name,"inputtype":input,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"objectplural":objectplural,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":"other","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries":0,"numberofcharacter":numberofcharacter}
                 });
             })
             .catch( error => {
@@ -552,6 +552,7 @@ const dialogflowFulfillment = (request,response) => {
         var mistakeC = agent.getContext('expecting-question-answer').parameters.mistakeC
         var tries = agent.getContext('expecting-question-answer').parameters.tries
         var numberofcharacter = agent.getContext('expecting-question-answer').parameters.numberofcharacter
+        var objectplural = agent.getContext('expecting-question-answer').parameters.objectplural
         
         var tempanswerarray = answer
         var verdict
@@ -585,6 +586,7 @@ const dialogflowFulfillment = (request,response) => {
                 temp = temp.replace(/_n2_/g,num2)
                 temp = temp.replace(/_objective_/g,objective)
                 temp = temp.replace(/_operation_/g,operation)
+                temp = temp.replace(/_objectplural_/g,objectplural)
 
                 temp = temp.replace(/_action_./g,action)
                 temp = temp.replace(/_character1_./g,character1)
@@ -597,6 +599,7 @@ const dialogflowFulfillment = (request,response) => {
                 temp = temp.replace(/_n2_./g,num2)
                 temp = temp.replace(/_objective_./g,objective)
                 temp = temp.replace(/_operation_./g,operation)
+                temp = temp.replace(/_objectplural_./g,objectplural)
 
                 tempanswerarray[i] = temp
                 
@@ -693,6 +696,7 @@ const dialogflowFulfillment = (request,response) => {
                                 restatementResponse = restatementResponse.replace(/_objective_/g,objective)
                                 restatementResponse = restatementResponse.replace(/_operation_/g,operation)
                                 restatementResponse = restatementResponse.replace(/_answer_/g,numanswer)
+                                restatementResponse = restatementResponse.replace(/_objectplural_/g,objectplural)
 
                                 restatementResponse = restatementResponse.replace(/_action_./g,action)
                                 restatementResponse = restatementResponse.replace(/_character1_./g,character1)
@@ -706,7 +710,7 @@ const dialogflowFulfillment = (request,response) => {
                                 restatementResponse = restatementResponse.replace(/_objective_./g,objective)
                                 restatementResponse = restatementResponse.replace(/_operation_./g,operation)
                                 restatementResponse = restatementResponse.replace(/_answer_./g,numanswer)
-                                
+                                restatementResponse = restatementResponse.replace(/_objectplural_./g,objectplural)
                                 
                                 var positiveResponseindex = Math.floor(Math.random() * positiveResponses.length)
                                 var positiveResponse = positiveResponses[positiveResponseindex].response

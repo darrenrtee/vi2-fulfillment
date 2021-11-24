@@ -38,7 +38,7 @@
           "useStemDict": true
         },
         "stemDict": {
-          "3": {
+          "7": {
             "intent": "CORRECT",
             "domain": "default"
           }
@@ -49,7 +49,7 @@
         "sentences": [
           {
             "domain": "default",
-            "utterance": "3",
+            "utterance": "7",
             "intent": "CORRECT"
           }
         ],
@@ -67,18 +67,18 @@
               "log": true
             },
             "features": {
-              "3": 1
+              "7": 1
             },
             "intents": {
               "CORRECT": 1
             },
             "intentFeatures": {
               "CORRECT": {
-                "3": 1
+                "7": 1
               }
             },
             "featuresToIntent": {
-              "3": [
+              "7": [
                 "CORRECT"
               ]
             },
@@ -96,7 +96,7 @@
                 "log": true
               },
               "features": [
-                "3"
+                "7"
               ],
               "intents": [
                 "CORRECT"
@@ -116,7 +116,7 @@
     "extraSentences": [
       [
         "en",
-        "3"
+        "7"
       ]
     ]
   },
