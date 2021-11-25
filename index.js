@@ -398,6 +398,7 @@ const dialogflowFulfillment = (request,response) => {
                 temp = temp.replace(/_object_/g,object)
                 temp = temp.replace(/_object1_/g,object1)
                 temp = temp.replace(/_object2_/g,object2)
+                temp = temp.replace(/_objectplural_/g,objectplural)
                 temp = temp.replace(/_pasttense_/g,pasttense)
     
                 agent.add(temp)
@@ -425,6 +426,7 @@ const dialogflowFulfillment = (request,response) => {
                 temp = temp.replace(/_object_/g,object)
                 temp = temp.replace(/_object1_/g,object1)
                 temp = temp.replace(/_object2_/g,object2)
+                temp = temp.replace(/_objectplural_/g,objectplural)
                 temp = temp.replace(/_pasttense_/g,pasttense)
     
                 agent.add(temp)
@@ -452,6 +454,7 @@ const dialogflowFulfillment = (request,response) => {
                 temp = temp.replace(/_object_/g,object)
                 temp = temp.replace(/_object1_/g,object1)
                 temp = temp.replace(/_object2_/g,object2)
+                temp = temp.replace(/_objectplural_/g,objectplural)
                 temp = temp.replace(/_pasttense_/g,pasttense)
     
                 agent.add(temp)
@@ -479,6 +482,7 @@ const dialogflowFulfillment = (request,response) => {
                 temp = temp.replace(/_object_/g,object)
                 temp = temp.replace(/_object1_/g,object1)
                 temp = temp.replace(/_object2_/g,object2)
+                temp = temp.replace(/_objectplural_/g,objectplural)
                 temp = temp.replace(/_pasttense_/g,pasttense)
     
                 agent.add(temp)
@@ -506,6 +510,7 @@ const dialogflowFulfillment = (request,response) => {
                 temp = temp.replace(/_object_/g,object)
                 temp = temp.replace(/_object1_/g,object1)
                 temp = temp.replace(/_object2_/g,object2)
+                temp = temp.replace(/_objectplural_/g,objectplural)
                 temp = temp.replace(/_pasttense_/g,pasttense)
     
                 agent.add(temp)

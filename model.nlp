@@ -38,7 +38,7 @@
           "useStemDict": true
         },
         "stemDict": {
-          "1": {
+          "mang,rudi": {
             "intent": "CORRECT",
             "domain": "default"
           }
@@ -49,7 +49,7 @@
         "sentences": [
           {
             "domain": "default",
-            "utterance": "1",
+            "utterance": "mang rudy",
             "intent": "CORRECT"
           }
         ],
@@ -67,18 +67,23 @@
               "log": true
             },
             "features": {
-              "1": 1
+              "mang": 1,
+              "rudi": 1
             },
             "intents": {
               "CORRECT": 1
             },
             "intentFeatures": {
               "CORRECT": {
-                "1": 1
+                "mang": 1,
+                "rudi": 1
               }
             },
             "featuresToIntent": {
-              "1": [
+              "mang": [
+                "CORRECT"
+              ],
+              "rudi": [
                 "CORRECT"
               ]
             },
@@ -96,15 +101,17 @@
                 "log": true
               },
               "features": [
-                "1"
+                "mang",
+                "rudi"
               ],
               "intents": [
                 "CORRECT"
               ],
               "perceptrons": [
                 [
-                  9.46274471282959,
-                  4.736227717439353
+                  5.692978382110596,
+                  5.692978382110596,
+                  2.8527748842713336
                 ]
               ]
             }
@@ -116,7 +123,7 @@
     "extraSentences": [
       [
         "en",
-        "1"
+        "mang rudy"
       ]
     ]
   },
