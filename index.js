@@ -611,14 +611,15 @@ const dialogflowFulfillment = (request,response) => {
                 
             }
             verdict= await processAnswer(tempanswerarray,agent.query)
-            var similarityindex = stringSimilarity(tempanswerarray,agent.query)
+            //var similarityindex = stringSimilarity(tempanswerarray,agent.query)
             
-            if(verdict == null)
-                verdict = "WRONG"
-            else if(verdict == "CORRECT"){
-                if(similarityindex < 0.5)
-                    verdict = "WRONG"
-            }
+			console.log("VERDICT: " + verdict);
+			
+            if(verdict == "CORRECT" || verdict == "IN-TOPIC" || verdict == "IN-TOPIC-MISPELLING"){
+               verdict = "CORRECT"
+            } else {
+				verdict = "WRONG"
+			}
         }
             
        
@@ -1698,27 +1699,53 @@ const dialogflowFulfillment = (request,response) => {
         for(var i = 0; i < answerarray.length; i++){
             manager.addDocument('en', answerarray[i].toLowerCase(), 'CORRECT');
         }
-        
-        manager.addAnswer('en', 'CORRECT', 'CORRECT');
-        
+		
+        //manager.addAnswer('en', 'CORRECT', 'CORRECT');
+		
         await manager.train();
         manager.save();
+	   
         var response = await manager.process('en', input.toLowerCase());
-        return response.answer;
+		if(response.answer === 'CORRECT') {	
+			console.log("CORRECT");
+			return response.answer;
+		} else {
+			var similarityScore = stringSimilarity(answerarray, input);
+		}
+			
+			console.log("SIMILARITY SCORE: " + similarityScore);
+			if(similarityScore > 0.75) {
+				return 'CORRECT';
+			} else if(similarityScore > 0.5) {
+				return 'CORRECT';
+			} else if(similarityScore > 0.25) {
+				return 'OUT-OF-TOPIC';
+			} else {
+				return 'OUT-OF-TOPIC-MISPELLING';
+			}
+		}
+	   
+	   return response.answer;
     }
 
     function stringSimilarity(answerarray,input){
         var similarity = require('similarity')
         var similarityindex = 0
-
+		var temp = 0;
+	
         for(var i = 0; i < answerarray.length; i++){
-            var temp
-            temp = similarity(answerarray[i], input);
-            if(temp > similarityindex)
-                similarityindex = temp
-        }
+			temp = similarity(answerarray[i], input);
+			if(temp > similarityindex) {
+				similarityindex = temp;
+			}
+			var words = input.split(" ");
+			for(var j = 0; j < words.length; j++) {
+				temp = similarity(answerarray[i], words[j]);
+				if(temp > similarityindex)
+					similarityindex = temp;
+			}
+		}
 
+		
         return similarityindex
     }
-
-}
