@@ -623,62 +623,62 @@ const dialogflowFulfillment = (request,response) => {
         }
             
        
-        if(agent.query.includes("?")){
+        // if(agent.query.includes("?")){
 
-            var tempinputclassification = await getInputClassification(agent.query)
+        //     var tempinputclassification = await getInputClassification(agent.query)
 
-            if(tempinputclassification == null){
-                tempinputclassification = 'other'
-            }
+        //     if(tempinputclassification == null){
+        //         tempinputclassification = 'other'
+        //     }
             
-            var pos = tagger.tagSentence(agent.query);
-            var bagofnouns = [];
-            var finalreponse
-            var ontology
+        //     var pos = tagger.tagSentence(agent.query);
+        //     var bagofnouns = [];
+        //     var finalreponse
+        //     var ontology
 
-            for(var i = 0; i < pos.length; i ++){
-                if(pos[i].pos == "NN"|| pos[i].pos == "NNP"){
-                    bagofnouns.push(pos[i].normal)
-                }
-            }
+        //     for(var i = 0; i < pos.length; i ++){
+        //         if(pos[i].pos == "NN"|| pos[i].pos == "NNP"){
+        //             bagofnouns.push(pos[i].normal)
+        //         }
+        //     }
 
-            for(var i = 0; i < bagofnouns.length; i ++){
-                ontology = await getQuestionOntology(bagofnouns[i])
-                if(ontology != null)
-                    break
-            }
+        //     for(var i = 0; i < bagofnouns.length; i ++){
+        //         ontology = await getQuestionOntology(bagofnouns[i])
+        //         if(ontology != null)
+        //             break
+        //     }
 
-            if(ontology != null){
-                finalresponse = ontology.first + " is a " + ontology.second
-                finalresponse = finalresponse.charAt(0).toUpperCase() + finalresponse.slice(1);
+        //     if(ontology != null){
+        //         finalresponse = ontology.first + " is a " + ontology.second
+        //         finalresponse = finalresponse.charAt(0).toUpperCase() + finalresponse.slice(1);
                 
-                agent.add(finalresponse);
-                agent.setContext({
-                    "name": 'expecting-requestion',
-                    "lifespan": 1,
-                    "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"objectplural":objectplural,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":tempinputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries,"numberofcharacter":numberofcharacter}
-                })
-            }   
-            else{
-                return getResponses("unknownprompt")
-                .then( unknownPrompts => {
+        //         agent.add(finalresponse);
+        //         agent.setContext({
+        //             "name": 'expecting-requestion',
+        //             "lifespan": 1,
+        //             "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"objectplural":objectplural,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":tempinputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries,"numberofcharacter":numberofcharacter}
+        //         })
+        //     }   
+        //     else{
+        //         return getResponses("unknownprompt")
+        //         .then( unknownPrompts => {
 
-                    var unknownPromptindex = Math.floor(Math.random() * unknownPrompts.length)
-                    var unknownPrompt = unknownPrompts[unknownPromptindex].response
+        //             var unknownPromptindex = Math.floor(Math.random() * unknownPrompts.length)
+        //             var unknownPrompt = unknownPrompts[unknownPromptindex].response
 
-                    agent.add(unknownPrompt);
-                    agent.setContext({
-                        "name": 'expecting-requestion',
-                        "lifespan": 1,
-                        "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"objectplural":objectplural,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":tempinputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries,"numberofcharacter":numberofcharacter}
-                    })
-                })
-                .catch( error => {
-                    agent.add(error.toString()); // Error: Unknown response type: "undefined"
-                });
-            }
-        }
-        else if(verdict == "CORRECT"){
+        //             agent.add(unknownPrompt);
+        //             agent.setContext({
+        //                 "name": 'expecting-requestion',
+        //                 "lifespan": 1,
+        //                 "parameters":{"name": name,"problemnumber": problemnumber,"currentquestion":currentquestion,"num1":num1,"num2":num2,"action":action,"character1":character1,"character2":character2,"object":object,"problemtype":problemtype,"object1":object1,"object2":object2,"objectplural":objectplural,"pasttense":pasttense,"objective":objective,"operation":operation,"answer":answer,"questiontype":questiontype,"inputclassification":tempinputclassification,"requestion":"yes","mistakeU":mistakeU,"mistakeF":mistakeF,"mistakeC":mistakeC,"tries": tries,"numberofcharacter":numberofcharacter}
+        //             })
+        //         })
+        //         .catch( error => {
+        //             agent.add(error.toString()); // Error: Unknown response type: "undefined"
+        //         });
+        //     }
+        // }
+        if(verdict == "CORRECT"){
             
             if(currentquestion + 1 <= 12){
                 
@@ -950,10 +950,10 @@ const dialogflowFulfillment = (request,response) => {
                                     restatementResponse = restatementResponse.replace(/_operation_./g,operation)
                                     
                                     if(currentquestion + 1 <= 12){
-                                        correctAnswerprompt = correctAnswerprompt.replace(/_answer_/g,tempanswerarray[0])
-                                        correctAnswerprompt = correctAnswerprompt.replace(/_answer_./g,tempanswerarray[0])
-                                        restatementResponse = restatementResponse.replace(/_answer_/g,tempanswerarray[0])
-                                        restatementResponse = restatementResponse.replace(/_answer_./g,tempanswerarray[0])
+                                        correctAnswerprompt = correctAnswerprompt.replace(/_answer_/g,numanswer)
+                                        correctAnswerprompt = correctAnswerprompt.replace(/_answer_./g,numanswer)
+                                        restatementResponse = restatementResponse.replace(/_answer_/g,numanswer)
+                                        restatementResponse = restatementResponse.replace(/_answer_./g,numanswer)
                                         finalresponse = negativeResponse + " " + correctAnswerprompt + " " + restatementResponse + " " + nextQuestionPrompt
                                         agent.add(finalresponse);
                                         agent.setContext({

@@ -38,7 +38,11 @@
           "useStemDict": true
         },
         "stemDict": {
-          "mang,rudi": {
+          "fish": {
+            "intent": "CORRECT",
+            "domain": "default"
+          },
+          "and,bangus,galunggong": {
             "intent": "CORRECT",
             "domain": "default"
           }
@@ -49,7 +53,12 @@
         "sentences": [
           {
             "domain": "default",
-            "utterance": "mang rudy",
+            "utterance": "fish",
+            "intent": "CORRECT"
+          },
+          {
+            "domain": "default",
+            "utterance": "bangus and galunggong",
             "intent": "CORRECT"
           }
         ],
@@ -67,23 +76,33 @@
               "log": true
             },
             "features": {
-              "mang": 1,
-              "rudi": 1
+              "fish": 1,
+              "bangus": 1,
+              "and": 1,
+              "galunggong": 1
             },
             "intents": {
               "CORRECT": 1
             },
             "intentFeatures": {
               "CORRECT": {
-                "mang": 1,
-                "rudi": 1
+                "fish": 1,
+                "bangus": 1,
+                "and": 1,
+                "galunggong": 1
               }
             },
             "featuresToIntent": {
-              "mang": [
+              "fish": [
                 "CORRECT"
               ],
-              "rudi": [
+              "bangus": [
+                "CORRECT"
+              ],
+              "and": [
+                "CORRECT"
+              ],
+              "galunggong": [
                 "CORRECT"
               ]
             },
@@ -101,17 +120,21 @@
                 "log": true
               },
               "features": [
-                "mang",
-                "rudi"
+                "fish",
+                "bangus",
+                "and",
+                "galunggong"
               ],
               "intents": [
                 "CORRECT"
               ],
               "perceptrons": [
                 [
-                  5.692978382110596,
-                  5.692978382110596,
-                  2.8527748842713336
+                  8.487215995788574,
+                  2.872195243835449,
+                  2.872195243835449,
+                  2.872195243835449,
+                  5.684821184019125
                 ]
               ]
             }
@@ -123,7 +146,11 @@
     "extraSentences": [
       [
         "en",
-        "mang rudy"
+        "fish"
+      ],
+      [
+        "en",
+        "bangus and galunggong"
       ]
     ]
   },
